@@ -1,3 +1,6 @@
+.npmrc
+attached_assets/
+scripts/
 dist
 tmp
 out-tsc
