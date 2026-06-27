@@ -38,8 +38,3 @@ Thumbs.db
 
 .cache/
 .local/
-.replit
-.replitignore
-replit.md
-.replit-artifact/
-pnpm-lock.yaml
