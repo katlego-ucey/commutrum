@@ -1,4 +1,4 @@
-import { NavLink } from "wouter";
+import { Link, useRoute } from "wouter";
 import { cn } from "@/lib/utils";
 import {
   BarChart3,
@@ -18,6 +18,24 @@ const navItems = [
   { href: "/monitoring", label: "Monitoring", icon: Activity },
   { href: "/registry", label: "Hypothesis Registry", icon: Archive },
 ];
+
+function NavItem({ href, label, icon: Icon, collapsed }: { href: string; label: string; icon: React.ElementType; collapsed: boolean }) {
+  const [isActive] = useRoute(href);
+  return (
+    <Link
+      href={href}
+      className={cn(
+        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
+        isActive
+          ? "bg-primary/10 text-primary font-medium"
+          : "text-muted-foreground hover:bg-muted hover:text-foreground",
+      )}
+    >
+      <Icon className="h-4 w-4 shrink-0" />
+      {!collapsed && <span className="truncate">{label}</span>}
+    </Link>
+  );
+}
 
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
@@ -46,21 +64,13 @@ export default function Sidebar() {
       </div>
       <nav className="flex-1 p-2 space-y-1">
         {navItems.map((item) => (
-          <NavLink
+          <NavItem
             key={item.href}
             href={item.href}
-            className={({ isActive }) =>
-              cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
-                isActive
-                  ? "bg-primary/10 text-primary font-medium"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
-              )
-            }
-          >
-            <item.icon className="h-4 w-4 shrink-0" />
-            {!collapsed && <span className="truncate">{item.label}</span>}
-          </NavLink>
+            label={item.label}
+            icon={item.icon}
+            collapsed={collapsed}
+          />
         ))}
       </nav>
       <div className="p-3 border-t text-xs text-muted-foreground">
