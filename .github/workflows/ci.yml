@@ -6,38 +6,43 @@ on:
   pull_request:
     branches: [main]
 
-env:
-  NODE_VERSION: "22"
-
 jobs:
   typecheck-and-build:
-    name: TypeCheck & Build
+    name: Typecheck & Build
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          version: 9
+          node-version: '24'
 
-      - uses: actions/setup-node@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: "pnpm"
+          version: latest
 
-      - run: pnpm install --frozen-lockfile
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
 
-      - name: TypeCheck libraries
-        run: pnpm run typecheck:libs
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-
 
-      - name: TypeCheck artifacts
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
         run: pnpm run typecheck
 
-      - name: Build API Server
-        run: pnpm --filter @workspace/api-server run build
-
-      - name: Build Frontend
-        run: pnpm --filter @workspace/commutrum run build
-        env:
-          PORT: 5173
-          BASE_PATH: /
+      - name: Build
+        run: pnpm run build
