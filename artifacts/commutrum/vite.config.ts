@@ -4,14 +4,9 @@ import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 
 const rawPort = process.env.PORT;
+const port = rawPort ? Number(rawPort) : 3000;
 
-if (!rawPort) {
-  throw new Error("PORT environment variable is required but was not provided.");
-}
-
-const port = Number(rawPort);
-
-if (Number.isNaN(port) || port <= 0) {
+if (rawPort && (Number.isNaN(port) || port <= 0)) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
 
