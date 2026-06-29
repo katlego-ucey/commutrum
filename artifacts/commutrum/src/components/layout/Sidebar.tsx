@@ -19,24 +19,6 @@ const navItems = [
   { href: "/registry", label: "Hypothesis Registry", icon: Archive },
 ];
 
-function NavItem({ href, label, icon: Icon, collapsed }: { href: string; label: string; icon: React.ElementType; collapsed: boolean }) {
-  const [isActive] = useRoute(href);
-  return (
-    <Link
-      href={href}
-      className={cn(
-        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
-        isActive
-          ? "bg-primary/10 text-primary font-medium"
-          : "text-muted-foreground hover:bg-muted hover:text-foreground",
-      )}
-    >
-      <Icon className="h-4 w-4 shrink-0" />
-      {!collapsed && <span className="truncate">{label}</span>}
-    </Link>
-  );
-}
-
 export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false);
 
@@ -63,15 +45,24 @@ export default function Sidebar() {
         </button>
       </div>
       <nav className="flex-1 p-2 space-y-1">
-        {navItems.map((item) => (
-          <NavItem
-            key={item.href}
-            href={item.href}
-            label={item.label}
-            icon={item.icon}
-            collapsed={collapsed}
-          />
-        ))}
+        {navItems.map((item) => {
+          const [isActive] = useRoute(item.href);
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
+                isActive
+                  ? "bg-primary/10 text-primary font-medium"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
+              )}
+            >
+              <item.icon className="h-4 w-4 shrink-0" />
+              {!collapsed && <span className="truncate">{item.label}</span>}
+            </Link>
+          );
+        })}
       </nav>
       <div className="p-3 border-t text-xs text-muted-foreground">
         {!collapsed && (
