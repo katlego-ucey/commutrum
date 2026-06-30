@@ -1,5 +1,7 @@
 # Module 06 — Probability Calibration
 
+> **Commutrum Wealth Engine** — One stage in the 13-module pipeline that scores and ranks JSE equities for investment. All modules feed into a single composite score and calibrated win probability. See the [root README](../../README.md) for the full pipeline.
+
 **Pipeline position:** Consumes composite scores from `05-composite-research-engine`
 and historical outcomes from `09-walk-forward-validation`. Outputs calibrated
 probabilities to `07-portfolio-construction` and to the user-facing dashboards.
