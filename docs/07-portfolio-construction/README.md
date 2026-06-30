@@ -1,5 +1,7 @@
 # Module 07 — Portfolio Construction
 
+> **Commutrum Wealth Engine** — One stage in the 13-module pipeline that scores and ranks JSE equities for investment. All modules feed into a single composite score and calibrated win probability. See the [root README](../../README.md) for the full pipeline.
+
 **Pipeline position:** Consumes calibrated probabilities from
 `06-probability-calibration`. Outputs target portfolio weights to
 `08-execution-model`.
@@ -8,7 +10,7 @@
 ## Purpose
 
 Turn per-stock probabilities into an actual portfolio. This is a deliberately
-separate layer from the research engine — a critique raised across this
+separate layer from the wealth engine — a critique raised across this
 project's design process is that "should I act on this score" is a position
 sizing and risk question, not a scoring question, and conflating the two
 (e.g. building a "do nothing" mode *into* the scoring engine) muddies both.
