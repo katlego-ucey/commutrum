@@ -1,5 +1,7 @@
 # Module 00 — Universe Screening (Hard Filters)
 
+> **Commutrum Wealth Engine** — One stage in the 13-module pipeline that scores and ranks JSE equities for investment. All modules feed into a single composite score and calibrated win probability. See the [root README](../../README.md) for the full pipeline.
+
 **Pipeline position:** First stage. Consumes raw listing data; outputs the
 daily investable universe consumed by every downstream module.
 **Status:** Specification
