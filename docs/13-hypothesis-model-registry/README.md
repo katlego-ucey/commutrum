@@ -1,5 +1,7 @@
 # Module 13 — Hypothesis & Model Registry
 
+> **Commutrum Wealth Engine** — One stage in the 13-module pipeline that scores and ranks JSE equities for investment. All modules feed into a single composite score and calibrated win probability. See the [root README](../../README.md) for the full pipeline.
+
 **Pipeline position:** The permanent record that every other module writes
 to. Implements the Scientific Governance Lifecycle (the 8-stage process
 running alongside the entire pipeline).
