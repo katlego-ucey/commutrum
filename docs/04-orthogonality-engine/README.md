@@ -1,5 +1,7 @@
 # Module 04 — Orthogonality Engine
 
+> **Commutrum Wealth Engine** — One stage in the 13-module pipeline that scores and ranks JSE equities for investment. All modules feed into a single composite score and calibrated win probability. See the [root README](../../README.md) for the full pipeline.
+
 **Pipeline position:** Consumes normalized signals from `03-signal-construction`.
 Outputs a reduced, independence-checked signal set to `05-composite-research-engine`.
 **Status:** Specification
