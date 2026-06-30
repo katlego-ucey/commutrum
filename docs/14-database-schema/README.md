@@ -33,21 +33,25 @@ indexing strategy, and migration approach.
 | Module | Tables |
 |---|---|
 | `00` Universe Screening | `universe_snapshot`, `screening_rules`, `exclusions_log` |
-| `01` Data Pipeline | `raw_market_data`, `raw_corporate_actions`, `raw_dividends`, `raw_fundamentals`, `raw_sens_announcements`, `raw_analyst_estimates`, `raw_estimate_revisions`, `macro_series`, `data_quality_log` |
+| `01` Data Pipeline | `raw_market_data`, `raw_corporate_actions`, `raw_dividends`, `raw_fundamentals`, `raw_sens_announcements`, `raw_analyst_estimates`, `raw_estimate_revisions`, `macro_series`, `data_quality_log`, **`trading_calendar`** |
 | `02` Baseline Factors | `factor_raw_values`, `factor_definitions` |
 | `03` Signal Construction | `factor_signals`, `sector_mapping` |
 | `04` Orthogonality Engine | `signal_correlation_matrix`, `signal_clusters`, `orthogonalized_signals` |
 | `05` Composite Research Engine | `regime_classifications`, `regime_weight_profiles`, `composite_scores`, `interaction_terms` |
 | `06` Probability Calibration | `calibration_models`, `calibration_curves`, `probability_outputs` |
 | `07` Portfolio Construction | `portfolio_holdings`, `position_sizing_rules`, `portfolio_constraints` |
-| `08` Execution Model | `cost_model_parameters`, `execution_assumptions`, `implementation_shortfall_log` |
+| `08` Execution Model | `cost_model_parameters`, `execution_assumptions`, `implementation_shortfall_log`, **`broker_config`** |
 | `09` Walk-Forward Validation | `backtest_runs`, `backtest_results`, `validation_periods` |
 | `10` Continuous Monitoring | `monitoring_metrics_daily`, `alert_log` |
 | `11` Decay Detection | `decay_alerts`, `decay_investigation_log` |
 | `12` Factor Admission Protocol | `factor_candidates`, `admission_gate_results`, `admission_decisions` |
 | `13` Hypothesis & Model Registry | `hypothesis_registry`, `model_versions`, `lifecycle_status`, `audit_log` |
 
-That is roughly 35 tables for the v1 four-factor baseline. This is
+**`trading_calendar`** (owned by `01`) stores one row per calendar date with `is_trading_day BOOLEAN` and `holiday_name TEXT`. The nightly cron scheduler must consult this table before triggering the batch — the cron expression alone (`1-5`) does not exclude JSE public holidays. See `docs/01-data-pipeline` for the full DDL and the complete 12-holiday list including Freedom Day (27 April) and Family Day (Monday after Easter).
+
+**`broker_config`** (owned by `08`) stores one row per broker with fields including `has_monthly_flat_fee BOOLEAN` and `monthly_flat_fee_zar NUMERIC(10,2)`, enabling the EasyEquities Thrive fee (R25/month) to be modelled as a parameterised cost rather than a hardcoded constant. See `docs/08-execution-model` for the full Thrive fee modelling rules.
+
+That is roughly 37 tables for the v1 four-factor baseline. This is
 intentionally far short of the "40–60 tables" estimated for the full,
 all-candidate-factors version of the platform — table count should grow
 only as factors are actually admitted via `12`, not be pre-built for

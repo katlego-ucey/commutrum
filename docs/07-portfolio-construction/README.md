@@ -102,12 +102,14 @@ The wealth engine produces identical composite scores and calibrated probabiliti
 
 ### Portfolio tiers
 
-| Capital (ZAR) | Tier | Positions | Sizing method | Rebalance |
-|---|---|---|---|---|
-| R5 – R100 | ETF mode | 1 | N/A — single top-scored JSE ETF | Quarterly |
-| R100 – R500 | Starter | 3–5 | Equal weight (fractional shares via EasyEquities) | Quarterly |
-| R500 – R2,000 | Standard | 5–10 | Simplified inverse-vol (trailing 60d vol) | Quarterly |
-| R2,000+ | Full | 15–25 | Full inverse-vol + all sector/stock constraints | Monthly |
+| Capital (ZAR) | Tier | Positions | Sizing method | Rebalance | Recommended broker | Thrive fee drag |
+|---|---|---|---|---|---|---|
+| R5 – R100 | ETF mode | 1 | N/A — single top-scored JSE ETF | Quarterly | **Satrix Direct** (R10 min, no monthly fee) | N/A |
+| R100 – R500 | Starter | 3–5 | Equal weight (fractional shares) | Quarterly | **Satrix Direct** or EasyEquities (waiver only) | R25/mo = up to 25% of capital/mo on EasyEquities — viable only with fee waiver |
+| R500 – R2,000 | Standard | 5–10 | Simplified inverse-vol (trailing 60d vol) | Quarterly | **Satrix Direct** preferred; EasyEquities if Thrive waiver confirmed | R25/mo = 5–1.25% of capital/mo on EasyEquities |
+| R2,000+ | Full | 15–25 | Full inverse-vol + all sector/stock constraints | Monthly | EasyEquities or any JSE broker | R25/mo = <1.25% of capital/mo — manageable |
+
+> **EasyEquities Thrive fee (R25/month):** Charged to all EasyEquities accounts not on Thrive Level 3 and aged 21–64. This flat monthly fee dominates transaction costs at small capital levels. **For portfolios below R2,000, recommend Satrix Direct as the default broker** — it has no monthly platform fee and a R10 minimum. Only direct users to EasyEquities below R2,000 after confirming they qualify for Thrive fee waiver (under 21, over 65, or Thrive Level 3). See `docs/08-execution-model` for the full Thrive fee modelling specification.
 
 ### API interface
 
@@ -127,7 +129,7 @@ For small portfolios where only 1–3 stocks are selected, the threshold matters
 
 - All portfolio weights and values displayed in **ZAR (R)**
 - Position sizes rounded to the nearest cent
-- Cost estimate (STT + commission) shown alongside each recommended position
+- Cost estimate (STT + commission + Thrive monthly fee allocated proportionally) shown alongside each recommended position
 - For R5–R100 tier: display the ETF recommendation with a note: *"At this capital level, a single diversified ETF provides better risk management than individual stock selection"*
 
 ### Acceptance criteria

@@ -187,7 +187,7 @@ This is the most underestimated risk in the project. The root README lists data 
 
 | Data type | Required for | Provider | Realistic cost |
 |---|---|---|---|
-| JSE EOD prices (OHLCV) | M00, M01, M03, momentum factor | EODHD $19/month tier | **~$19–50/month** |
+| JSE EOD prices (OHLCV) | M00, M01, M03, momentum factor | EODHD personal plan ($19–$79/month) for dev; **$399–$2,499/month commercial tier required to redistribute to subscribers** | **~$19–79/month dev; ~$399–2,499/month production** |
 | JSE fundamental data (income statement, balance sheet, cash flow) | M02 Piotroski F-score | Profile Data / IRESS / Sharenet / FactSet | **R3,000–R20,000/month** — this is the expensive piece |
 | Analyst EPS estimates + revisions | M02 earnings revisions factor | FactSet / Refinitiv / Bloomberg | **$500–$5,000/month** — institutional pricing |
 | SENS announcements (structured) | M01, M02 | JSE direct or vendors above | Included in data vendor packages or JSE subscription |
@@ -195,7 +195,7 @@ This is the most underestimated risk in the project. The root README lists data 
 
 **The blocking cost is fundamental data.** Quality, machine-readable fundamental data for JSE equities (needed for Piotroski) does not exist at a free or low-cost tier. Alpha Vantage's JSE fundamental coverage is incomplete. EODHD's fundamentals for JSE are better but still patchy for smaller names. Institutional-grade data from Profile Data or IRESS typically requires direct negotiation and costs thousands of Rand per month.
 
-**For a prototype/paper trading system:** EODHD at $79/month (All-World plan) gives adequate price and dividend data. Piotroski can be computed manually from the annual reports of the top 50 JSE names as a starting point — but this does not scale and should be budgeted for from day one.
+**For a prototype/paper trading system:** EODHD at $79/month (All-World plan, personal tier) gives adequate price and dividend data for internal use. Piotroski can be computed manually from the annual reports of the top 50 JSE names as a starting point — but this does not scale and should be budgeted for from day one. **Important:** the personal plan does not permit redistributing data or derived scores to third parties — before serving any subscriber, upgrade to EODHD's commercial license ($399–$2,499/month). This cost was not in the original budget and must be added to the year-one cost model.
 
 **For a production system:** Budget R15,000–R30,000/month for data before writing a single line of code.
 
@@ -252,9 +252,11 @@ None of this prevents building the engine first and applying for the license onc
 | **3 years** | 24 months of audited live track record. FSCA application possible. The system has a credible, honest answer to "does it make money." |
 | **5 years** | If the alpha holds and regulatory requirements are met, a small licensed fund (R5m–R50m AUM) is achievable. At JSE capacity constraints, the fund would not be scalable far beyond R200m before market impact erodes alpha. |
 
-**Growing the wealth of individual retail users with their own capital (self-directed, not third-party managed):** this is possible much sooner — 12–18 months — and does not require a Category IIA license. Publishing recommendations for users who place their own trades is a fundamentally different (and far simpler) regulatory proposition than discretionary fund management.
+**Growing the wealth of individual retail users with their own capital (self-directed):** this is the right first commercial target — reachable in 12–18 months. However, **this does not automatically mean "no license required."**
 
-**The design as specified is aimed at the self-directed recommendation model** (ranked stock list + calibrated probabilities that users act on themselves). This is the right first target. Do not attempt to manage third-party money before the FSCA license is obtained.
+> **FAIS warning:** A platform where a user enters their capital amount and receives personalised, capital-weighted portfolio recommendations may constitute "advice" under the Financial Advisory and Intermediary Services Act — even when the user places the trade themselves. FSCA fit-and-proper regulations explicitly capture automated robo-advice. **Before Stage 2 opens to any real user, obtain a written FAIS opinion from a financial services attorney.** Three outcomes are possible: (1) get a Category I FSP license first, (2) redesign Stage 2 as general research (same ranked list for all users, no capital-weighted sizing — fastest route to market), or (3) operate as an appointed representative under an existing FSP. See `SYSTEM_REPORT.md §7 Stage 2` for the full analysis.
+
+**The design as specified is aimed at the self-directed recommendation model** (ranked stock list + calibrated probabilities that users act on themselves). This is the right first target — but scope Stage 2 as the general-research version until the FAIS opinion is in hand. Do not attempt to manage third-party money before the FSCA Category II or IIA license is obtained.
 
 ---
 

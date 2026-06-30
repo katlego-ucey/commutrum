@@ -134,11 +134,13 @@ systematically overstate historical engine performance.
 
 The JSE does not provide a free public data API. Recommended providers:
 
-| Provider | Ticker format | Coverage | Cost | Notes |
-|---|---|---|---|---|
-| **EODHD** (recommended) | `NPN.JSE` | Full JSE — OHLCV, fundamentals, dividends, corporate actions | $19–79/month | Near-realtime; best JSE coverage |
-| Alpha Vantage | `JSE:NPN` | OHLCV + fundamentals | Free (25 calls/day) / $50+/month | Use for development and testing |
-| Yahoo Finance | `NPN.JO` | OHLCV only | Free (unofficial) | No SLA — prototype use only |
+| Provider | Ticker format | Coverage | Dev cost | Production (redistribution) cost | Notes |
+|---|---|---|---|---|---|
+| **EODHD** (recommended) | `NPN.JSE` | Full JSE — OHLCV, fundamentals, dividends, corporate actions | $19–$79/month (personal plan) | **$399–$2,499/month** (commercial license — required to redistribute scored data to subscribers) | Personal plan prohibits third-party redistribution. Contact EODHD sales before Stage 2 launch. |
+| Alpha Vantage | `JSE:NPN` | OHLCV + fundamentals | Free (25 calls/day) | $50+/month | Use for local development only — JSE fundamental coverage incomplete |
+| Yahoo Finance | `NPN.JO` | OHLCV only | Free (unofficial) | Not applicable | No SLA — prototype use only; do not use in production |
+
+> **EODHD licensing rule:** Use the personal/developer plan ($19–$79/month) for all internal development and backtesting in Phase 1. The moment any user receives scored or derived data, switch to the commercial API license. Failure to do so violates EODHD's terms of service. See `SYSTEM_REPORT.md §8.1` and `ROADMAP.md Decision 1` for the full cost breakdown.
 
 ### JSE Price Format — Cents to Rand Conversion
 

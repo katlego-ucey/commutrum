@@ -123,20 +123,21 @@ The wealth engine produces identical scores at all portfolio sizes. Capital only
 | R500 – R2,000 | Standard | 5–10 | Full composite scoring, simplified rebalancing |
 | R2,000+ | Full | 15–25 | All M07 constraints, monthly rebalancing |
 
-Transaction costs (EasyEquities model, default for small investors):
-- Commission: 0.25% per trade (no minimum floor)
+Transaction costs (default model for small investors):
+- Commission: 0.25% per trade (EasyEquities; 1c minimum)
 - STT: 0.25% on all equity purchases (SARS-mandated)
-- Round-trip friction on R50 trade: ~R0.25 (0.5%) — acceptable
+- **EasyEquities Thrive fee: R25/month flat** — waived for users under 21, over 65, or on Thrive Level 3. At R500 portfolio this is 5% monthly drag; at R2,000 it is 1.25%. **Portfolios below R2,000 should use Satrix Direct** (no monthly fee, R10 minimum, 0.2% commission) unless Thrive waiver is confirmed.
+- Round-trip friction on R1,000 trade (EasyEquities, with Thrive): ~R5 commission + R2.50 STT + Thrive pro-rated
 
 ---
 
 ## Live JSE Data Integration
 
-| Provider | Use | Cost | Notes |
-|---|---|---|---|
-| **EODHD** | **Recommended production** | $19–79/month | Best JSE coverage, near-realtime |
-| Alpha Vantage | Development/testing | Free–$50+/month | 25 free calls/day, format: `JSE:NPN` |
-| Yahoo Finance | Prototyping only | Free | No SLA, 15min delayed |
+| Provider | Use | Dev cost | Production cost (redistribution) | Notes |
+|---|---|---|---|---|
+| **EODHD** | **Recommended** | $19–$79/month (personal plan) | **$399–$2,499/month** (commercial — required before serving any subscriber) | Personal plan prohibits redistribution. See `ROADMAP.md Decision 1`. |
+| Alpha Vantage | Dev/testing only | Free (25 calls/day) | $50+/month | JSE fundamental coverage incomplete |
+| Yahoo Finance | Prototyping only | Free | Not applicable | No SLA, unofficial — do not use in production |
 
 **JSE price format:** EODHD returns prices in **cents (ZAc)**. The ingestion layer divides by 100 to store in **Rand (ZAR)**. Example: `346000c → R3,460.00`.
 
@@ -201,7 +202,8 @@ pnpm --filter @commutrum/commutrum run dev     # start the frontend
 - **Point-in-time integrity**: all queries filter on `publication_date`, never `period_end_date`
 - **Survivorship-free**: delisted companies remain queryable for all historical dates
 - **No hardcoded parameters**: all thresholds, weights, and tax rates are versioned database rows
-- **SA tax params**: STT 0.25%, dividend WHT 20%, CGT effective 21.6% (corporate) — versioned with `effective_from` dates; updated annually with SARS Budget
+- **SA tax params**: STT 0.25%, dividend WHT 20%, CGT effective 21.6% (corporate) / ~18% (individual, top marginal); annual CGT exclusion **R50,000** (SARS Budget 26 Feb 2026) — all versioned with `effective_from` dates; updated annually with SARS Budget
+- **Platform fee**: EasyEquities Thrive fee R25/month (versioned in `broker_config` table — parameterised, never hardcoded)
 - **Backtest honesty**: every result reported with IC, ICIR, Sharpe, Sortino, max drawdown, and benchmark comparison — never a bare return number
 - **Factor governance**: no factor enters production without clearing `docs/12-factor-admission-protocol`
 
