@@ -91,3 +91,49 @@ position_weight(ticker) = raw_weight(ticker) / Σ raw_weight(all selected ticker
 ## References
 
 - Risk parity / inverse-volatility position sizing: standard portfolio construction methodology (Qian, 2005; Maillard, Roncalli, Teiletche, 2010)
+
+---
+
+## Small Investor Support — Tiered Portfolio Sizing
+
+> **Depends on:** Issue #42 (small investor support research) and issue #35 (M08 execution model for cost parameters).
+
+The wealth engine produces identical composite scores and calibrated probabilities at all portfolio sizes. Capital only affects the number of positions the investor can afford.
+
+### Portfolio tiers
+
+| Capital (ZAR) | Tier | Positions | Sizing method | Rebalance |
+|---|---|---|---|---|
+| R5 – R100 | ETF mode | 1 | N/A — single top-scored JSE ETF | Quarterly |
+| R100 – R500 | Starter | 3–5 | Equal weight (fractional shares via EasyEquities) | Quarterly |
+| R500 – R2,000 | Standard | 5–10 | Simplified inverse-vol (trailing 60d vol) | Quarterly |
+| R2,000+ | Full | 15–25 | Full inverse-vol + all sector/stock constraints | Monthly |
+
+### API interface
+
+```
+GET /api/v1/portfolio/recommendations?portfolio_capital_zar=500
+```
+
+Returns the tier-appropriate position count and recommended stocks for that capital amount, using the current composite scores and calibrated probabilities from M06.
+
+### Minimum probability threshold (all tiers)
+
+The minimum probability threshold (configurable versioned parameter) applies at all portfolio sizes. No stock below the threshold enters any recommendation, regardless of tier.
+
+For small portfolios where only 1–3 stocks are selected, the threshold matters more — a low-threshold pick in a 1-stock portfolio has nowhere to hide.
+
+### Currency and display
+
+- All portfolio weights and values displayed in **ZAR (R)**
+- Position sizes rounded to the nearest cent
+- Cost estimate (STT + commission) shown alongside each recommended position
+- For R5–R100 tier: display the ETF recommendation with a note: *"At this capital level, a single diversified ETF provides better risk management than individual stock selection"*
+
+### Acceptance criteria
+
+- [ ] `portfolio_capital_zar` accepted as API parameter; tier derived programmatically — not hardcoded per user
+- [ ] Tier 1 (R5–R100) returns exactly 1 ETF recommendation with cost estimate
+- [ ] All tiers return the full ranked score list — user can always see more options than their tier
+- [ ] Equal-weight sizing for Tier 2 confirmed: weights sum to 1.0 after normalization
+- [ ] Minimum probability threshold enforced identically across all tiers
