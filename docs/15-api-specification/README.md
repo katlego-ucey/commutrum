@@ -1,5 +1,7 @@
 # Module 15 — API Specification (Consolidated)
 
+> **Commutrum Wealth Engine** — One stage in the 13-module pipeline that scores and ranks JSE equities for investment. All modules feed into a single composite score and calibrated win probability. See the [root README](../../README.md) for the full pipeline.
+
 **Scope:** Cross-cutting. Every numbered module lists its own endpoints
 under "API endpoints" in its README. This document is the consolidated
 reference: conventions, auth, versioning, and the full endpoint list.
