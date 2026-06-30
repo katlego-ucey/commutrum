@@ -69,3 +69,94 @@ stay accurate without separate manual maintenance.
 ## References
 
 See per-module READMEs for the authoritative request/response contract of each endpoint.
+
+---
+
+## Cross-Cutting API Conventions
+
+### Timestamps — SAST (Africa/Johannesburg)
+
+All date/time values in API responses must include the UTC offset:
+
+```json
+{
+  "as_of": "2025-06-30T17:00:00+02:00",
+  "universe_screened_at": "2025-06-30T17:05:12+02:00"
+}
+```
+
+- Stored as UTC `TIMESTAMPTZ` in PostgreSQL
+- Returned with `+02:00` suffix (SAST = UTC+2, no DST)
+- Date-only fields use `YYYY-MM-DD` format (no time component)
+- Accept `?tz=Africa/Johannesburg` query param on any endpoint that filters by date
+
+### Currency — ZAR (South African Rand)
+
+All monetary values returned in **ZAR (Rand)**, never cents:
+
+```json
+{
+  "portfolio_value_zar": 1250.00,
+  "estimated_trade_cost_zar": 3.13,
+  "probability_positive_return": 0.72
+}
+```
+
+Field naming: `_zar` suffix on all monetary fields. Display format in frontend: `R 1 250.00` (en-ZA locale).
+
+### Small Investor Parameter
+
+Endpoints that return portfolio recommendations accept:
+```
+?portfolio_capital_zar=500
+```
+
+Returns tier-appropriate position count and recommendations for that capital level. See issue #42 for the full tier specification.
+
+### Market Status Endpoint
+
+```
+GET /api/v1/market/status
+```
+
+Response:
+```json
+{
+  "is_open": true,
+  "session": "continuous_trading",
+  "opens_at": "2025-06-30T07:00:00Z",
+  "closes_at": "2025-06-30T15:00:00Z",
+  "local_time_sast": "2025-06-30T14:32:00+02:00",
+  "next_trading_day": "2025-07-01"
+}
+```
+
+JSE sessions (all times SAST = UTC+2):
+- Pre-market auction: 08:30–09:00
+- Continuous trading: 09:00–16:50
+- Closing auction: 16:50–17:00
+- After-hours: closed
+
+### Authentication
+
+Protected routes require `Authorization: Bearer <JWT>` header.
+
+**Unprotected (no auth required):**
+- `GET /api/v1/market/status`
+- `GET /api/v1/universe?date=`
+- `GET /api/v1/research/{ticker}` (public score data)
+- `GET /api/v1/factors/definitions`
+
+**Protected (JWT required):**
+- All `GET /api/v1/portfolio/*`
+- All `POST`, `PATCH`, `DELETE` endpoints
+- `POST /api/v1/backtest/run`
+
+### Rate Limiting
+
+| Route group | Limit |
+|---|---|
+| Public GET endpoints | 100 req/min per IP |
+| Authenticated GET | 200 req/min per user |
+| `POST /api/v1/backtest/run` | 5 req/hour per user |
+| `POST /api/v1/portfolio/rebalance` | 10 req/hour per user |
