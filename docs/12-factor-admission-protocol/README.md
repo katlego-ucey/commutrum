@@ -1,5 +1,7 @@
 # Module 12 — Factor Admission Protocol
 
+> **Commutrum Wealth Engine** — One stage in the 13-module pipeline that scores and ranks JSE equities for investment. All modules feed into a single composite score and calibrated win probability. See the [root README](../../README.md) for the full pipeline.
+
 **Pipeline position:** Gatekeeper for any new factor candidate before it can
 be added to `02-baseline-factors` (or treated as an interaction term in
 `05-composite-research-engine`). Every admitted/rejected decision is logged
