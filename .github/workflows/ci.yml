@@ -32,5 +32,31 @@ jobs:
       - name: Typecheck
         run: pnpm run typecheck
 
+      - name: Unit tests
+        run: pnpm run test --if-present
+
+      - name: Leakage / look-ahead tests
+        run: pnpm run test:leakage --if-present
+
       - name: Build
         run: pnpm run build
+
+  secret-scan:
+    name: Secret Scanning
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect secrets in source
+        run: |
+          if grep -r --include="*.ts" --include="*.js" --include="*.json" \
+            -E "(password|secret|api_key|apikey|token)\s*=\s*['\"][^'\"]{8,}" \
+            --exclude-dir=node_modules --exclude-dir=.git .; then
+            echo "Potential hardcoded secret detected — use environment variables"
+            exit 1
+          fi
+          echo "No hardcoded secrets found"
