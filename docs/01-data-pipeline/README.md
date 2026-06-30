@@ -1,5 +1,7 @@
 # Module 01 — Point-in-Time Data Pipeline
 
+> **Commutrum Wealth Engine** — One stage in the 13-module pipeline that scores and ranks JSE equities for investment. All modules feed into a single composite score and calibrated win probability. See the [root README](../../README.md) for the full pipeline.
+
 **Pipeline position:** Foundation layer. Every other module reads from this
 one. Nothing downstream may bypass it to query a data source directly.
 **Status:** Specification
