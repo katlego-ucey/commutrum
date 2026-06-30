@@ -125,3 +125,70 @@ systematically overstate historical engine performance.
 
 - JSE market data products and delayed-feed rules: jse.co.za/market-data
 - JSE delisting count (1989–2024) and rising market concentration: Financial Mail
+
+---
+
+## Live JSE Data Sources
+
+> **Depends on:** Issue #41 (live JSE API integration) must be configured before this module ingests real data.
+
+The JSE does not provide a free public data API. Recommended providers:
+
+| Provider | Ticker format | Coverage | Cost | Notes |
+|---|---|---|---|---|
+| **EODHD** (recommended) | `NPN.JSE` | Full JSE — OHLCV, fundamentals, dividends, corporate actions | $19–79/month | Near-realtime; best JSE coverage |
+| Alpha Vantage | `JSE:NPN` | OHLCV + fundamentals | Free (25 calls/day) / $50+/month | Use for development and testing |
+| Yahoo Finance | `NPN.JO` | OHLCV only | Free (unofficial) | No SLA — prototype use only |
+
+### JSE Price Format — Cents to Rand Conversion
+
+**Critical:** EODHD and most JSE data providers return prices in **South African cents (ZAc)**, not Rand (ZAR).
+
+```typescript
+// WRONG — stores cents as if they were Rand
+await db.insert(rawMarketData).values({ close_zar: eodhResponse.close });
+
+// CORRECT — always divide by 100 before storing
+await db.insert(rawMarketData).values({ close_zar: eodhResponse.close / 100 });
+// Example: 346000c (Naspers) → R3,460.00 stored as 3460.0000
+```
+
+All monetary values in the database are stored in **ZAR (Rand)** as `NUMERIC(18,4)` with `_zar` column suffix.
+
+### Data Ingestion Schedule (SAST)
+
+```
+17:05 SAST (15:05 UTC) — nightly batch, after JSE closing auction
+  ├── Ingest EOD OHLCV for all listed tickers (cents → ZAR conversion)
+  ├── Ingest new SENS announcements published today
+  ├── Ingest updated analyst EPS estimates and revisions
+  ├── Trigger M00 universe re-screen
+  └── Trigger M02 baseline factor recomputation
+
+Cron expression (UTC): 5 15 * * 1-5   (weekdays only — JSE is closed weekends)
+```
+
+---
+
+## South African Timezone Enforcement
+
+All timestamps follow the project-wide SAST standard (see issue #43):
+
+| Rule | Implementation |
+|---|---|
+| **Storage** | `TIMESTAMPTZ` (UTC) in all PostgreSQL columns — no exceptions |
+| **Display** | `Africa/Johannesburg` (SAST = UTC+2, permanent — no DST) in API responses and frontend |
+| **Publication date** | Exact SENS announcement time stored as UTC `TIMESTAMPTZ` |
+| **Ingestion timestamp** | `ingestion_ts TIMESTAMPTZ DEFAULT NOW()` records when data entered the system |
+
+```sql
+-- Correct column definitions
+publication_date  TIMESTAMPTZ NOT NULL,   -- when results published on SENS (UTC stored)
+period_end_date   DATE NOT NULL,          -- accounting period end date only (no time)
+ingestion_ts      TIMESTAMPTZ DEFAULT NOW()
+
+-- WRONG
+publication_date  TIMESTAMP WITHOUT TIME ZONE  -- never use this
+```
+
+API responses must include timezone offset: `"2025-06-30T17:00:00+02:00"` — never a bare `"2025-06-30T17:00:00"`.
