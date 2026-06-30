@@ -1,5 +1,7 @@
 # Module 08 — Execution Model
 
+> **Commutrum Wealth Engine** — One stage in the 13-module pipeline that scores and ranks JSE equities for investment. All modules feed into a single composite score and calibrated win probability. See the [root README](../../README.md) for the full pipeline.
+
 **Pipeline position:** Consumes target portfolio weights from
 `07-portfolio-construction`. Outputs an implementation shortfall estimate to
 `09-walk-forward-validation` (for realistic backtesting) and, in production,
