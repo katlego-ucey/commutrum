@@ -1,5 +1,7 @@
 # Module 10 — Continuous Monitoring
 
+> **Commutrum Wealth Engine** — One stage in the 13-module pipeline that scores and ranks JSE equities for investment. All modules feed into a single composite score and calibrated win probability. See the [root README](../../README.md) for the full pipeline.
+
 **Pipeline position:** Runs continuously against production output from all
 modules. Feeds `11-decay-detection` and the Monitoring Dashboard
 (`16-frontend-dashboards`).
