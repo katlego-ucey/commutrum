@@ -1,5 +1,7 @@
 # Module 14 — Database Schema (Consolidated)
 
+> **Commutrum Wealth Engine** — One stage in the 13-module pipeline that scores and ranks JSE equities for investment. All modules feed into a single composite score and calibrated win probability. See the [root README](../../README.md) for the full pipeline.
+
 **Scope:** Cross-cutting. Every numbered module (`00`–`13`) owns specific
 tables, listed in its own README under "Database tables owned." This
 document is the consolidated reference: the full table list, relationships,
