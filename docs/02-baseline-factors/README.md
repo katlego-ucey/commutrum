@@ -1,5 +1,7 @@
 # Module 02 — Baseline Factors (Version 1)
 
+> **Commutrum Wealth Engine** — One stage in the 13-module pipeline that scores and ranks JSE equities for investment. All modules feed into a single composite score and calibrated win probability. See the [root README](../../README.md) for the full pipeline.
+
 **Pipeline position:** Consumes the investable universe (`00`) and
 point-in-time data (`01`). Outputs raw factor values consumed by
 `03-signal-construction`.
