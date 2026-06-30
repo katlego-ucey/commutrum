@@ -1,5 +1,7 @@
 # Module 03 — Signal Construction
 
+> **Commutrum Wealth Engine** — One stage in the 13-module pipeline that scores and ranks JSE equities for investment. All modules feed into a single composite score and calibrated win probability. See the [root README](../../README.md) for the full pipeline.
+
 **Pipeline position:** Consumes raw factor values from `02-baseline-factors`
 (and any admitted candidate factors from `12-factor-admission-protocol`).
 Outputs normalized, comparable signals to `04-orthogonality-engine`.
