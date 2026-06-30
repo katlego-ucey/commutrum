@@ -1,5 +1,7 @@
 # Module 18 — AI Agent Development Playbook
 
+> **Commutrum Wealth Engine** — One stage in the 13-module pipeline that scores and ranks JSE equities for investment. All modules feed into a single composite score and calibrated win probability. See the [root README](../../README.md) for the full pipeline.
+
 **Scope:** Meta-document. This is what an AI coding agent (Claude Code or
 similar) should follow while implementing any module in this repository.
 **Status:** Specification
