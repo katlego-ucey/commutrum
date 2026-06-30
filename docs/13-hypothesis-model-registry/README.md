@@ -87,3 +87,61 @@ out-of-sample test and stage 5's cost-aware paper trading first.
 ## References
 
 - Model governance practice in institutional quantitative research (promotion/demotion lifecycles, audit trails)
+
+---
+
+## Appendix — Paper Portfolio Technical Specification
+
+Stage 5 of the governance lifecycle ("Paper Portfolio") requires a concrete technical implementation, not just a policy statement. This appendix specifies it.
+
+### What paper trading means in this system
+
+A paper portfolio records the recommendations the engine *would have made* — at realistic execution prices, with full transaction cost simulation from `08-execution-model` — without any real money changing hands. Its purpose is to produce an honest bridge between the theoretical walk-forward validation (`09`) and live capital deployment.
+
+### Database tables
+
+```sql
+-- One row per trading day per ticker in the paper portfolio
+paper_portfolio_holdings (
+  date              DATE NOT NULL,
+  ticker            VARCHAR(20) NOT NULL,
+  target_weight     NUMERIC(8,6) NOT NULL,          -- from M07
+  composite_score   NUMERIC(6,2) NOT NULL,           -- from M05
+  probability_win   NUMERIC(5,4) NOT NULL,           -- from M06
+  fill_price_zar    NUMERIC(18,4) NOT NULL,          -- next-day open price (simulated fill)
+  simulated_cost_zar NUMERIC(18,4) NOT NULL,         -- from M08 estimate-shortfall
+  PRIMARY KEY (date, ticker)
+)
+
+-- Portfolio-level daily performance
+paper_portfolio_performance (
+  date              DATE NOT NULL PRIMARY KEY,
+  portfolio_value_zar  NUMERIC(18,4) NOT NULL,       -- simulated NAV
+  daily_return      NUMERIC(10,8) NOT NULL,
+  alsi_return       NUMERIC(10,8) NOT NULL,          -- benchmark for same day
+  tracking_error    NUMERIC(10,8),
+  sharpe_ytd        NUMERIC(8,4),
+  max_drawdown_ytd  NUMERIC(8,4)
+)
+```
+
+### Execution simulation rules (mandatory)
+
+1. **Fill price**: the next trading day's opening price, not the signal-day closing price. This models execution delay correctly.
+2. **Cost simulation**: every simulated trade passes through `POST /api/v1/execution/estimate-shortfall` before recording. The cost is deducted from the paper NAV.
+3. **Slippage model**: use the square-root impact model from `08-execution-model` even in paper mode — this is what makes paper results comparable to live results.
+4. **Corporate actions**: splits, rights issues, and dividends must be applied to the paper portfolio on their ex-date, same as they would affect a live portfolio.
+
+### Promotion criteria from paper to live
+
+A factor or model may not advance from Stage 5 (Paper Portfolio) to Stage 6 (Production) unless all of the following are met over the paper period:
+
+- [ ] Paper portfolio Sharpe ≥ the value recorded in `09` walk-forward validation (within confidence interval)
+- [ ] Paper hit rate ≥ the calibrated probability from `06-probability-calibration` (i.e., the probability model is not systematically wrong in live conditions)
+- [ ] Paper maximum drawdown ≤ the worst drawdown seen in `09`'s out-of-sample test windows
+- [ ] Paper period duration ≥ 3 months (no factor is promoted on less than one quarter of live observation)
+- [ ] No open decay alerts in `11-decay-detection` at the time of promotion review
+
+### Minimum paper portfolio duration
+
+3 months minimum. This is not a negotiable shortcut — the purpose of the paper period is to catch distribution shifts between the historical validation data and current market conditions, and 3 months is the minimum window over which this becomes observable for weekly-decay-horizon factors (revisions) and monthly-decay-horizon factors (momentum).

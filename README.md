@@ -27,8 +27,10 @@ The pipeline runs nightly after JSE market close: live JSE data in → investabl
 | Exchange | Johannesburg Stock Exchange (JSE) |
 | Currency | South African Rand — **ZAR (R)** |
 | Timezone | **SAST = UTC+2** (Africa/Johannesburg) — no daylight saving |
-| Market open | 09:00 SAST (07:00 UTC) |
-| Market close | 17:00 SAST (15:00 UTC) |
+| Market open | 09:00 SAST (07:00 UTC) — pre-market auction starts 08:30 |
+| Continuous trading ends | 16:50 SAST (14:50 UTC) |
+| Closing auction | 16:50–17:00 SAST (14:50–15:00 UTC) |
+| Market close (session end) | 17:00 SAST (15:00 UTC) |
 | Nightly batch | **17:05 SAST** (15:05 UTC) — after closing auction |
 | JSE universe | ~280 listed companies; ~120–150 investable after screening |
 | Minimum trade | **R1** technically (JSE has no minimum value floor) |
@@ -56,13 +58,19 @@ apps/
   commutrum/          React + Vite frontend — 5 research and monitoring dashboards
 packages/
   db/                 Drizzle ORM schema (35+ tables across all modules)
-  api-spec/           OpenAPI spec + Orval codegen
-  api-client-react/   Generated TanStack Query hooks
-  api-zod/            Generated Zod schemas
+  api-spec/           OpenAPI spec (openapi.yaml) + Orval codegen config
+  api-client-react/   Generated TanStack Query hooks (do not hand-edit)
+  api-zod/            Generated Zod schemas (do not hand-edit)
 docs/
   00–13/              Module specifications (pipeline stages)
   14–18/              Database schema, API spec, dashboards, testing, playbook
+AUDIT.md              Full audit report (issues found, feasibility assessment)
+ROADMAP.md            Phased implementation plan with data costs and sprint checklist
 ```
+
+> **Status: documentation phase.** No implementation code exists yet.
+> Read `ROADMAP.md` for the concrete first steps before writing any code.
+> Read `docs/18-ai-agent-development-playbook/README.md` if using an AI coding agent.
 
 ---
 

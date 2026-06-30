@@ -78,8 +78,12 @@ factors that don't exist yet.
 
 ## Migration strategy
 
-- Schema migrations are version-controlled (e.g., Alembic for a Python
-  stack) and applied in order; no manual schema edits in any environment.
+- Schema migrations are managed with **Drizzle Kit** (`drizzle-kit migrate` /
+  `drizzle-kit push`), version-controlled alongside the schema definition in
+  `packages/db/src/schema/`. Apply migrations in order; no manual schema edits
+  in any environment. The workspace command is:
+  `pnpm --filter @commutrum/db run push` (development) or
+  `pnpm --filter @commutrum/db run migrate` (production with generated SQL files).
 - Every migration that adds a column to a point-in-time-sensitive table must
   include a backfill plan or an explicit note that historical rows will have
   `NULL` for the new column (and downstream code must handle that explicitly,

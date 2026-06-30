@@ -54,10 +54,20 @@ need.
 
 ## OpenAPI generation
 
-If using FastAPI (the recommended default per the root README), the OpenAPI
-schema is generated automatically from the endpoint type hints — keep
-request/response models as explicit Pydantic schemas so the generated docs
-stay accurate without separate manual maintenance.
+The stack is **TypeScript + Express 5** (not Python/FastAPI). The OpenAPI spec
+is maintained manually in `packages/api-spec/openapi.yaml` as the single source
+of truth. From it, **Orval** generates:
+- `packages/api-client-react/src/generated/` — TanStack Query hooks for the frontend
+- `packages/api-zod/src/generated/` — Zod schemas for server-side request/response validation
+
+Regenerate after any spec change:
+```
+pnpm --filter @commutrum/api-spec run codegen
+```
+
+Keep request and response bodies defined as explicit Zod schemas in the API server
+(`apps/api-server/src/routes/`) so the generated OpenAPI spec stays accurate without
+manual maintenance of duplicate type definitions.
 
 ## Acceptance criteria / Definition of Done
 
