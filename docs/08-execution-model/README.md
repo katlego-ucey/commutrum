@@ -119,3 +119,75 @@ the "real" backtest result.
 
 - Almgren, R. et al., square-root market impact models
 - SARS: Securities Transfer Tax (0.25%), Dividends Tax (20%), Capital Gains Tax effective rates
+
+---
+
+## Minimum Investment Research — Can You Trade JSE from R1?
+
+> **See also:** Issue #42 (small investor support).
+
+### JSE exchange rules on minimum trade size
+
+The Johannesburg Stock Exchange imposes **no minimum trade value**. The only exchange-level minimum is **1 share (1 board lot)**. A stock priced at R0.50 can be purchased for R0.50 + transaction costs.
+
+### Practical minimums by broker (South Africa)
+
+| Broker | Min per trade | Fractional shares | Commission | R1 trade possible? |
+|---|---|---|---|---|
+| **EasyEquities** | **R5** | **Yes** | ~0.25% (no floor) | Yes — from R5 |
+| Satrix Direct | R10 | No | 0.2% | No |
+| Capitec Invest | R10 | No | 0.5% | No |
+| Standard Bank OST | R100+ (min R79 fee) | No | ~R79 minimum | No |
+| FNB Share Investing | R100+ (min R70 fee) | No | R70 minimum | No |
+| Interactive Brokers | ~R18 (min $1 USD) | Yes | Variable | Marginal |
+
+**Verdict:** R1 trades are technically possible on the JSE via EasyEquities fractional shares. The practical minimum for cost-efficient wealth building is **R50 per position**.
+
+### Transaction cost analysis by portfolio size
+
+| Trade size | STT (0.25%) | Commission (0.25%) | Round-trip cost | Friction % | Assessment |
+|---|---|---|---|---|---|
+| R1 | R0.003 | R0.003 | ~R0.01 | ~3.0% | Very poor — costs dominate returns |
+| R10 | R0.025 | R0.025 | ~R0.05 | ~1.0% | Marginal |
+| R50 | R0.125 | R0.125 | ~R0.25 | **~0.5%** | **Acceptable — wealth engine minimum** |
+| R100 | R0.25 | R0.25 | ~R0.50 | ~0.5% | Good |
+| R500 | R1.25 | R1.25 | ~R2.50 | ~0.5% | Optimal |
+| R1,000+ | R2.50 | R2.50 | ~R5.00 | ~0.5% | Optimal |
+
+### South African Tax Parameters (versioned — updated annually with SARS Budget)
+
+All parameters stored in `cost_model_parameters` with `effective_from` and `effective_to` dates. **Never hardcode these** — they change with the annual February Budget.
+
+| Parameter | Current rate | Effective from | Notes |
+|---|---|---|---|
+| STT (Securities Transfer Tax) | **0.25%** | 2008-02-01 | Applied to all equity **purchases** (not sales) |
+| Dividend Withholding Tax | **20%** | 2017-02-22 | Applied to all dividend distributions |
+| CGT effective rate (corporate) | **21.6%** | 2023-03-01 | 80% inclusion × 27% corporate tax rate |
+| CGT effective rate (individual, max) | **~18%** | 2023-03-01 | 40% inclusion × 45% marginal tax rate |
+| ADTV capacity fraction | **5%** | versioned | Max position as % of 20-day ADTV |
+
+### Cost model modes (API parameter: `cost_model`)
+
+```
+"easyequities"   — 0.25% commission, no floor. Default for portfolios < R10,000
+"standard"       — 0.5% commission, R70 minimum floor. Default for portfolios ≥ R10,000
+"institutional"  — custom parameters stored in cost_model_parameters table
+```
+
+The cost model mode is determined by `portfolio_capital_zar` unless explicitly overridden.
+
+### SAST Tax Calendar
+
+SARS announces budget changes each **February** (SAST). The `effective_from` date on `cost_model_parameters` must use **UTC midnight** of the applicable SAST date:
+
+```typescript
+// Budget day example: 19 February 2025, effective immediately in SAST
+effective_from: new Date('2025-02-19T00:00:00+02:00').toISOString() // stored as UTC
+```
+
+### Acceptance criteria (additions)
+
+- [ ] R1 feasibility documented: system correctly calculates 3% round-trip friction on R1 and warns the user
+- [ ] EasyEquities cost model (0.25%, no floor) implemented and selected automatically for `portfolio_capital_zar < 10000`
+- [ ] All tax parameters stored as `cost_model_parameters` rows with `effective_from` in UTC `TIMESTAMPTZ`
+- [ ] A test confirms: changing `effective_from` date correctly selects the right parameter version for a given trade date
