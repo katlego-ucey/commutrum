@@ -43,14 +43,31 @@ A square-root impact model is the standard starting point (Almgren et al.);
 once the system reaches that stage of the governance lifecycle (see
 `13-hypothesis-model-registry`).
 
-### 4. South African taxes
+### 4. South African taxes and platform fees
 
-| Tax | Rate | Applies to |
-|---|---|---|
-| Securities Transfer Tax (STT) | 0.25% | Every transfer of a listed security — i.e., every buy |
-| Dividend Withholding Tax | 20% | Dividends received, withheld at source |
-| Capital Gains Tax (effective, companies) | 21.6% | Realized gains, if held in a corporate structure |
-| Capital Gains Tax (effective, individuals, top marginal) | ~18% | Realized gains, if held personally |
+| Cost | Rate / Amount | Applies to | Notes |
+|---|---|---|---|
+| Securities Transfer Tax (STT) | 0.25% | Every buy of a listed security | SARS-mandated |
+| Dividend Withholding Tax | 20% | Dividends received, withheld at source | |
+| Capital Gains Tax (effective, companies) | 21.6% | Realized gains in a corporate structure | |
+| Capital Gains Tax (effective, individuals, top marginal) | ~18% | Realized gains held personally | Annual exclusion: **R50,000** (SARS Budget 26 Feb 2026, up from R40,000) |
+| **EasyEquities Thrive fee** | **R25/month flat** | All EasyEquities accounts not on Thrive Level 3, and aged 21–64 | Waived for: under-21, over-65, or Thrive Level 3. Must be modelled as a monthly fixed drag on all EasyEquities portfolio tiers. |
+
+**Thrive fee modelling rules:**
+
+This flat fee is not trade-contingent — it is charged every calendar month regardless of activity. At small capital levels it dominates all other costs:
+
+```
+thrive_monthly_drag_pct = 25.00 / portfolio_value_zar * 100
+
+-- Examples:
+-- R500 portfolio:    5.00% per month drag
+-- R2,000 portfolio:  1.25% per month drag
+-- R10,000 portfolio: 0.25% per month drag
+-- R100,000 portfolio: 0.025% per month drag (negligible)
+```
+
+The execution model must add `thrive_monthly_fee = 25.00` to the `implementation_shortfall` calculation for all EasyEquities positions, proportionally allocated to each position by weight. Broker configuration in the database must include a `has_monthly_flat_fee BOOLEAN` and `monthly_flat_fee_zar NUMERIC(10,2)` field so this is parameterised, not hardcoded.
 
 These are **statutory rates current as of this specification's writing** and
 must be stored as versioned parameters (with an `effective_from` date) since

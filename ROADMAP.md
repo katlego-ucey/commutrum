@@ -10,13 +10,26 @@
 
 The entire pipeline depends on data quality. Make this decision first.
 
-| Option | Cost | Covers | Good for |
-|---|---|---|---|
-| **EODHD $79/month (All-World)** | ~R1,500/month | EOD prices, dividends, corporate actions, some fundamentals | Phase 1–2 start (price data + partial fundamentals) |
-| **Profile Data / Sharenet** | R3,000–R15,000/month | Full JSE fundamentals, SENS, consensus estimates | Phase 2 production (Piotroski requires this) |
-| **Alpha Vantage free tier** | Free | 25 calls/day EOD prices only | Local dev/testing only — not viable for production |
+| Option | Dev cost | Production (redistribution) cost | Covers | Good for |
+|---|---|---|---|---|
+| **EODHD** | $19–$79/month | **$399–$2,499/month** (commercial license required to redistribute data to subscribers) | EOD prices, dividends, corporate actions, some fundamentals | Phase 1 dev (personal plan); Phase 2+ requires commercial plan |
+| **Profile Data / Sharenet** | R3,000–R5,000/month | R5,000–R15,000/month | Full JSE fundamentals, SENS, consensus estimates | Phase 2 production — Piotroski requires this quality |
+| **Alpha Vantage free tier** | Free | Not applicable | 25 calls/day EOD prices only | Local dev/testing only — not viable for production |
 
-**Minimum viable start:** EODHD $19/month (gives JSE EOD prices). You can build M00, M01, and the momentum factor. You **cannot** build Piotroski F-score without quality fundamental data.
+> **⚠ EODHD commercial tier warning:** Distributing scored or derived data to paying subscribers requires EODHD's commercial API license — **not** the personal or developer plan. The personal plan ($19–$79/month) prohibits redistribution to third parties. The commercial license starts at $399/month and rises to $999–$2,499/month at scale. This was not reflected in earlier cost estimates. Before Stage 2 launches, contact EODHD sales, confirm the applicable tier in writing, and update the year-one budget to reflect R8,000–R20,000/month in data costs.
+
+**Minimum viable start (internal development only):** EODHD $19–$79/month (personal plan) gives JSE EOD prices. You can build M00, M01, and the momentum factor. You **cannot** build Piotroski F-score without quality fundamental data, and you **cannot** redistribute any EODHD data to users on this plan.
+
+### Decision 0 (new) — FAIS legal opinion
+
+**Before Stage 2 opens to real users, obtain a written FAIS opinion from a financial services attorney.** The question: does a system that takes a user's capital amount and returns a personalised, capital-weighted portfolio recommendation constitute "advice" under FAIS?
+
+Three outcomes are possible:
+1. **License first** — Category I FSP before personalised recommendations reach any user
+2. **Redesign as general research** — remove capital-weighted personalisation until licensed (fastest route to market)
+3. **Appointed representative** — operate under an existing FSP's license (common fintech approach)
+
+Budget for the attorney consultation now. The answer determines what Stage 2 actually is.
 
 ### Decision 2 — Infrastructure
 

@@ -1,7 +1,7 @@
 # Commutrum Wealth Engine — System Report
 
 **Document:** Full System Report — Architecture, Profit Generation, Capabilities, Risks, and Roadmap
-**Version:** 1.0
+**Version:** 1.1 (fact-checked — 2026-06-30)
 **Date:** 2026-06-30
 **Exchange:** Johannesburg Stock Exchange (JSE)
 **Currency:** South African Rand (ZAR)
@@ -238,41 +238,52 @@ These scenarios are based on the factors' documented historical performance char
 
 All figures assume:
 - Monthly rebalancing
-- EasyEquities commission model (0.25%)
-- STT 0.25% on all purchases
+- EasyEquities commission model (0.25% per trade, 1c minimum)
+- STT 0.25% on all purchases (SARS-mandated)
+- **EasyEquities Thrive fee: R25/month** — charged unless user reaches Thrive Level 3, or is under 21 or over 65. This flat fee is explicitly included in the net figures below. See note on tier viability.
 - Composite score Sharpe ratio of 0.6–0.9 (conservative, within historical range of similar strategies)
+
+> **Thrive fee impact on small portfolios:** At R25/month, the Thrive fee represents 5% of capital per month on a R500 portfolio and 50% of starting capital on a R50 portfolio — making the two smallest tiers economically unviable for users who pay the fee. The practical minimum capital for an EasyEquities user paying Thrive is approximately R2,000 (where R25/month = 1.25%/month = ~15%/year drag). Below this, direct the user to Satrix Direct (R10 minimum, no monthly fee, 0.2% commission) or Capitec Invest, or confirm they qualify for Thrive fee waiver before recommending EasyEquities.
 
 ### R500 portfolio (Standard tier — 5–10 positions)
 
-| Scenario | Monthly return | Annual return | After 2 years | After 5 years |
-|---|---|---|---|---|
-| Conservative (Sharpe 0.5) | ~1.5% | ~19% | ~R710 | ~R1,190 |
-| Base case (Sharpe 0.7) | ~2.0% | ~27% | ~R810 | ~R1,600 |
-| Strong (Sharpe 0.9) | ~2.5% | ~34% | ~R900 | ~R2,200 |
+> **EasyEquities Thrive fee drag at this capital level: R25/month = 5%/month of capital.** Net figures below subtract this fee. At R500, this tier is borderline — users who don't qualify for fee waiver should be directed to Satrix Direct or Capitec Invest instead.
 
-**Vs benchmark:** JSE ALSI has returned approximately 10–12% per annum over 10 years. The base case targets 27%/year — roughly 15 percentage points of alpha. This is the alpha the factor research supports but does not guarantee.
+| Scenario | Gross monthly return | Thrive drag | Net monthly | Net after 2 years | Net after 5 years |
+|---|---|---|---|---|---|
+| Conservative (Sharpe 0.5) | ~1.5% | −5.0% | −3.5% | ~R140 | ~R50 |
+| Base case (Sharpe 0.7) | ~2.0% | −5.0% | −3.0% | ~R200 | ~R80 |
+| Strong (Sharpe 0.9) | ~2.5% | −5.0% | −2.5% | ~R250 | ~R120 |
+
+**Recommendation: the R500 tier is only viable via EasyEquities for users with Thrive fee waiver (under 21, over 65, or Thrive Level 3). For all others, Satrix Direct eliminates the flat monthly fee and the minimum viable entry point becomes R500 with sensible economics.**
+
+**Vs benchmark:** ALSI total returns vary significantly by measurement window and dividend treatment. Rolling 10-year annualised figures have ranged from approximately 7% to 12% depending on start date — one commonly cited 10-year window produced 7.1% annualised; another ending 2019 with dividends reinvested reached ~12%. The trailing 12 months to early 2026 showed 43.6% on a gold/resources-led rally — emphatically not a representative year to anchor to. Use a specific window with a start date when referencing ALSI returns; never cite a single number without it. The base case targets 27%/year — roughly 15–20 percentage points of alpha over the median 10-year window. This is the alpha the factor research supports but does not guarantee.
 
 ### R10,000 portfolio (Full model tier)
 
-| Scenario | After 1 year | After 3 years | After 5 years |
+> **Thrive drag at this level: R25/month = 0.25%/month = ~3% per year.** Meaningful but manageable. Net figures subtract this fee.
+
+| Scenario | After 1 year (net) | After 3 years (net) | After 5 years (net) |
 |---|---|---|---|
-| Conservative | ~R11,900 | ~R16,900 | ~R23,800 |
-| Base case | ~R12,700 | ~R20,500 | ~R32,000 |
-| Strong | ~R13,400 | ~R24,200 | ~R44,000 |
+| Conservative | ~R11,500 | ~R15,800 | ~R22,100 |
+| Base case | ~R12,300 | ~R19,200 | ~R29,400 |
+| Strong | ~R13,100 | ~R22,700 | ~R40,600 |
 
 ### R100,000 portfolio (Full model — meaningful capital)
 
-| Scenario | After 1 year | After 3 years | After 5 years |
+> **Thrive drag at this level: R25/month = 0.025%/month = ~0.3% per year.** Economically negligible at this capital level. Net figures are essentially unchanged.
+
+| Scenario | After 1 year (net) | After 3 years (net) | After 5 years (net) |
 |---|---|---|---|
-| Conservative | ~R119,000 | ~R169,000 | ~R238,000 |
-| Base case | ~R127,000 | ~R205,000 | ~R320,000 |
-| Strong | ~R134,000 | ~R242,000 | ~R440,000 |
+| Conservative | ~R118,700 | ~R168,100 | ~R236,900 |
+| Base case | ~R126,700 | ~R204,100 | ~R318,800 |
+| Strong | ~R133,700 | ~R241,100 | ~R438,700 |
 
 ### Honest disclaimer on these numbers
 
-- These are pre-tax figures. CGT applies to realised gains (18% effective for individual investors at the top marginal rate).
+- These are pre-CGT figures. Capital Gains Tax applies to realised gains (effective ~18% at the individual top marginal rate; annual exclusion is R50,000 from 26 February 2026 per SARS Budget).
 - Past factor performance in academic research does not guarantee future JSE-specific performance. The walk-forward validation (Phase 3) will determine the real number for this system.
-- The base case is not optimistic — a 0.7 Sharpe ratio is actually conservative for a well-validated multi-factor model. Many published academic strategies show 1.0–1.5, but real-world net-of-costs performance is typically 40–60% of the paper result.
+- The base case is not optimistic — a 0.7 Sharpe is conservative for a well-validated multi-factor model. However: McLean & Pontiff (*Journal of Finance*, 2016), studying 97 published return predictors, found returns came in 26% lower out-of-sample and 58% lower after academic publication than the original in-sample result. "40–60% of the paper result in live trading" is therefore not a casual hedge — it is a peer-reviewed empirical baseline. Build the walk-forward validation (Phase 3) before presenting any return number to users or investors.
 - A 6-month result is not statistically meaningful. Evaluate the system over 18–24 months minimum.
 
 ---
@@ -282,13 +293,26 @@ All figures assume:
 ### Stage 1 — Internal paper trading tool (Months 8–12)
 The system runs daily, produces ranked recommendations, and tracks a simulated portfolio. No external users. This stage answers: "Does the science hold up in live conditions?"
 
-### Stage 2 — Self-directed investor platform (Months 12–24)
-Users register, input their capital amount, and receive daily personalised portfolio recommendations. They place trades themselves via EasyEquities or their own broker. Commutrum provides the research; the user retains control of execution.
+### Stage 2 — Investor platform (Months 12–24)
 
-**Revenue model at this stage:**
-- Subscription: R99–R299/month per user
-- At 500 users: R50,000–R150,000 monthly recurring revenue
-- No fund license required — this is a research/recommendation service
+> **⚠ FAIS licensing is unresolved here — this is the most important issue to clarify before Stage 2 launches.** The original draft stated "no fund license required." This is likely incorrect under FAIS. A platform where users enter their capital amount and receive personalised, capital-weighted portfolio recommendations is arguably furnishing "advice" as defined by the Financial Advisory and Intermediary Services Act — even when the user places the trade themselves. Automated or robo-advice is explicitly captured by FSCA fit-and-proper regulations.
+
+**Get a written FAIS opinion from a financial services attorney before Stage 2 opens to real users.** The specific question to ask: *"Does a system where a user enters their capital amount and receives a daily personalised ranked portfolio with recommended weights meet the FAIS definition of advice, and if so, what is the minimum licensing path and realistic timeline?"*
+
+Three structural answers may come back — each reshapes Stage 2 differently:
+
+| Answer | What it means for Stage 2 |
+|---|---|
+| **License first** | Obtain Category I (non-discretionary advice) FSP authorisation before any personalised recommendation reaches a user. The license fee is modest, but a compliance officer, a Key Individual who has passed RE1/RE3, and a documented risk framework take months to establish. Budget this as a year-one cost, not year two. |
+| **Redesign as general research** | Ship Stage 2 without capital-weighted personalisation — everyone sees the same ranked list and the methodology behind it, with no system-generated position sizing. Personalised weighting becomes a Stage 3 feature gated behind the license. This is the fastest route to market and the most defensible regulatory position. |
+| **Appointed representative** | Operate under an already-licensed FSP's umbrella rather than building a standalone license. Slower to full independence, typically involves a revenue share and someone else's compliance oversight, but a common fintech route to market while the proprietary license is pending. |
+
+Until the attorney's answer is in hand, **Stage 2 development should be scoped as the general research version** (option 2 above) — it requires no licensing and can be built while the FAIS question is resolved.
+
+**Revenue model (general research version, pre-license):**
+- Subscription: R99–R299/month per user for ranked scores, methodology, and educational content
+- Personalised capital-weighted allocation gated behind license at Stage 3
+- At 500 users: R50,000–R150,000 MRR
 
 ### Stage 3 — Licensed advisory service (Year 2–3)
 With 12+ months of audited recommendations and a growing user base, apply for an FSCA Category I FSP (Financial Services Provider) license to formalise the advisory relationship. This enables providing regulated financial advice in writing.
@@ -299,7 +323,9 @@ With 12+ months of audited recommendations and a growing user base, apply for an
 - At 2,000 subscribers: R200,000–R300,000 MRR
 
 ### Stage 4 — Discretionary portfolio management (Year 3–4)
-With FSCA Category IIA (Discretionary FSP) license, manage client capital directly. Clients transfer funds; Commutrum executes trades on their behalf using EasyEquities or a custodian account. This is where the fund model begins.
+With FSCA **Category II** (Discretionary FSP) license, manage client capital directly. Clients transfer funds; Commutrum executes trades on their behalf using EasyEquities or a custodian account. This is where the fund model begins.
+
+> **Note on license categories:** Category II authorises discretionary investment decisions for portfolio and asset management. Category IIA is the separate, specialised Hedge Fund FSP licence reserved for Stage 5. These are distinct licenses with different requirements — do not conflate them.
 
 **Revenue model:**
 - Management fee: 0.5–1.5% per annum on AUM
@@ -331,14 +357,24 @@ Formally structured as a Qualified Investor Hedge Fund (QIHF) under the Collecti
 
 ### 8.1 Blocking (must resolve before any implementation begins)
 
-**Data access — JSE fundamental data**
-This is the single most critical unresolved issue. The Piotroski F-score requires clean, machine-readable financial statements (income statement, balance sheet, cash flow) for every investable JSE company — updated every quarter, timestamped with the actual SENS publication date, not the period end date.
+**Data access — JSE fundamental data and EODHD commercial licensing**
+This is the single most critical unresolved issue, with two distinct dimensions:
 
-- **EODHD fundamentals for JSE**: adequate for the top 40–50 JSE names; patchy for mid-caps and small-caps. Must be tested before committing.
-- **Profile Data / Sharenet**: better JSE coverage, but costs R3,000–R15,000/month. Not yet budgeted.
-- **What happens if this isn't resolved**: the system can only run the momentum factor (which needs only price data). A single-factor momentum system is legitimate but has documented crash risk and lower conviction than the three-factor design.
+**Dimension 1 — Data quality:** The Piotroski F-score requires clean, machine-readable financial statements (income statement, balance sheet, cash flow) for every investable JSE company, timestamped with the SENS publication date, not the period end. EODHD fundamentals for JSE are adequate for the top 40–50 names; patchy for mid-caps. Profile Data / Sharenet offers better coverage at R3,000–R15,000/month.
 
-**Action required:** Open accounts with EODHD and at least one JSE-specialist data vendor. Download a sample dataset for 20 JSE companies and verify: are fundamentals present, is the publication date stored correctly (not the period end), and are values in ZAR (not cents)?
+**Dimension 2 — Commercial licensing tier (critical, previously uncosted):** The cost budget in ROADMAP.md assumed EODHD at $79/month (the personal/developer plan). **Distributing scored data to paying subscribers requires EODHD's commercial API license, which costs $399–$2,499/month** — a 5–30× increase over the development budget. This is not optional: EODHD's terms of service prohibit redistribution of data to third parties on the personal plan. Verify the applicable commercial tier before any subscriber-facing feature is built.
+
+| EODHD Plan | Monthly cost | Data redistribution allowed? | Use case |
+|---|---|---|---|
+| Personal/Developer | $19–$79 | No | Internal development only |
+| Commercial Basic | $399 | Yes (limited) | Up to ~100 subscribers |
+| Commercial Professional | $999–$2,499 | Yes | Scale |
+
+**Revised year-one data budget:** Replace the "$79/month EODHD" line in ROADMAP.md with $399–$999/month commercial tier once any user receives scored data. Budget R8,000–R20,000/month for data (EODHD commercial + one SA fundamentals vendor) from the point Stage 2 launches.
+
+- **What happens if this isn't resolved**: the system can only run momentum (price data only). A single-factor momentum system is legitimate but has documented crash risk and lower conviction than the three-factor design.
+
+**Action required:** (1) Download a 20-company EODHD sample and verify JSE fundamental coverage and publication date accuracy. (2) Contact EODHD sales to confirm the commercial tier required for distributing ranked scores to paying subscribers and get written confirmation of the redistribution terms.
 
 ---
 
@@ -361,7 +397,24 @@ The system specifies a capacity fraction of 5% of 20-day ADTV per position (docs
 The composite engine (docs/05) specifies three market regimes (RISK_ON_TREND, RISK_OFF_DEFENSIVE, SIDEWAYS_CHOPPY) with pre-specified weight profiles. The weight profiles are currently placeholders — they must be set via out-of-sample walk-forward analysis, not guessed. Until Phase 3 validation is complete, the regime classification should run in "SIDEWAYS" default mode (equal weights) to avoid introducing a parameter that hasn't been validated.
 
 **JSE holiday calendar**
-The nightly batch cron runs weekdays (`1-5` in cron), but does not exclude JSE public holidays (Human Rights Day, Good Friday, Workers Day, Youth Day, National Women's Day, Heritage Day, Day of Reconciliation, Christmas, Day of Goodwill, New Year's Day). A position signal generated on a pre-holiday close cannot be executed until the next trading day — the execution delay model must account for this. The JSE holiday calendar must be stored in the database and consulted by the cron scheduler.
+The nightly batch cron runs weekdays (`1-5` in cron), but does not exclude JSE public holidays. The complete list of South African statutory holidays that close the JSE is:
+
+| Holiday | Date |
+|---|---|
+| New Year's Day | 1 January |
+| Human Rights Day | 21 March |
+| Good Friday | Variable (Friday before Easter Sunday) |
+| **Family Day** | **Monday after Easter Sunday** ← was missing from earlier versions |
+| **Freedom Day** | **27 April** ← was missing from earlier versions |
+| Workers' Day | 1 May |
+| Youth Day | 16 June |
+| National Women's Day | 9 August |
+| Heritage Day | 24 September |
+| Day of Reconciliation | 16 December |
+| Christmas Day | 25 December |
+| Day of Goodwill | 26 December |
+
+When a public holiday falls on a Sunday, the following Monday is observed. The full calendar must be stored in a `trading_calendar` database table (with `date`, `is_trading_day`, `holiday_name`) and consumed by the cron scheduler — the cron expression alone (`1-5`) is insufficient. The execution delay model (M08) must also look up this table when calculating next-day fill prices.
 
 **Naspers / Prosus complexity**
 Naspers (NPN) and Prosus (PRX) — the two largest JSE stocks by weight — have a documented structural anomaly: their JSE price is substantially determined by Tencent's Hong Kong price and the ZAR/USD rate, not by domestic fundamental factors. Commutrum flags them with `dual_listed = true` and a `currency_sensitivity_flag`, but has no mechanism to decompose their returns into "SA-driven" vs "Tencent-driven" components. Until this is built, scoring Naspers/Prosus on the same Piotroski/momentum factors as a domestic bank or retailer will produce misleading signals. Interim fix: exclude them from the scored universe or hard-cap their weight at 1%.
@@ -377,7 +430,7 @@ The momentum factor uses raw price: `price(t-1m) / price(t-12m) - 1`. Stocks tha
 Docs/17 specifies that a disaster recovery runbook must be written and tested before Phase 4 (live capital). The runbook should cover: what to do if the nightly batch fails, what to do if EODHD data is delayed or corrupted, what to do if the database goes down, and how to restore from backup. This is a documentation task but cannot be skipped once real money is involved.
 
 **Tax reporting for users**
-Once live users are placing trades based on Commutrum recommendations, they have annual CGT obligations. The system currently models transaction costs but does not produce CGT reports. For SA individuals, realised gains are subject to CGT at 40% inclusion rate × marginal tax rate (effective ~18% at top rate). For small investors, the R40,000 annual CGT exclusion means most will pay nothing — but this should be surfaced in the dashboard, not left to the user to figure out.
+Once live users are placing trades based on Commutrum recommendations, they have annual CGT obligations. The system currently models transaction costs but does not produce CGT reports. For SA individuals, realised gains are subject to CGT at 40% inclusion rate × marginal tax rate (effective ~18% at top rate). The SARS 2026 Budget (25 February 2026) raised the annual CGT exclusion to **R50,000** (up from R40,000) — for small investors this means most will pay nothing, but this should be surfaced in the dashboard, versioned in `cost_model_parameters`, and updated each February Budget.
 
 **JSE ETF recommendation (ETF mode)**
 The R5–R100 tier recommends "the top-scored JSE ETF" but there is no specification for how ETFs are scored. ETFs don't have Piotroski scores or analyst revisions. A simple approach: rank by (expense ratio, AUM, tracking error vs. index) and recommend the one with lowest costs and closest index tracking. The Satrix Top 40 and Satrix ALSI are the obvious defaults. This tier needs its own simple scoring logic.

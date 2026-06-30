@@ -168,6 +168,40 @@ All monetary values in the database are stored in **ZAR (Rand)** as `NUMERIC(18,
 Cron expression (UTC): 5 15 * * 1-5   (weekdays only — JSE is closed weekends)
 ```
 
+> **Important:** the cron expression alone is insufficient — it does not exclude JSE public holidays. Before triggering the nightly batch, the scheduler must check a `trading_calendar` table in the database and skip the run on non-trading days.
+
+**JSE public holidays (South African statutory holidays on which the exchange does not trade):**
+
+| Holiday | Date |
+|---|---|
+| New Year's Day | 1 January |
+| Human Rights Day | 21 March |
+| Good Friday | Variable — Friday before Easter Sunday |
+| Family Day | Monday after Easter Sunday (variable) |
+| Freedom Day | 27 April |
+| Workers' Day | 1 May |
+| Youth Day | 16 June |
+| National Women's Day | 9 August |
+| Heritage Day | 24 September |
+| Day of Reconciliation | 16 December |
+| Christmas Day | 25 December |
+| Day of Goodwill | 26 December |
+
+When a public holiday falls on a Sunday, the following Monday is observed and the exchange is closed that Monday. A `trading_calendar` table seeded with the complete holiday schedule (populated at migration time, refreshed annually) is the authoritative source. The cron scheduler must read this table — never infer holidays from the cron expression.
+
+```sql
+CREATE TABLE trading_calendar (
+  calendar_date DATE PRIMARY KEY,
+  is_trading_day BOOLEAN NOT NULL,
+  holiday_name   TEXT,           -- null when is_trading_day = true
+  created_at     TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Scheduler check before triggering nightly batch:
+SELECT is_trading_day FROM trading_calendar WHERE calendar_date = CURRENT_DATE;
+-- If false: skip batch, log skipped reason, alert if unexpected
+```
+
 ---
 
 ## South African Timezone Enforcement
