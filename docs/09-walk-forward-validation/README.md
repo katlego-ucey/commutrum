@@ -1,5 +1,7 @@
 # Module 09 — Walk-Forward Validation
 
+> **Commutrum Wealth Engine** — One stage in the 13-module pipeline that scores and ranks JSE equities for investment. All modules feed into a single composite score and calibrated win probability. See the [root README](../../README.md) for the full pipeline.
+
 **Pipeline position:** Orchestrates `00` through `08` repeatedly across
 rolling historical windows. Outputs validated performance metrics to
 `06-probability-calibration` (training data), `13-hypothesis-model-registry`
