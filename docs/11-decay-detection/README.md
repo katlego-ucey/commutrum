@@ -1,5 +1,7 @@
 # Module 11 — Decay Detection
 
+> **Commutrum Wealth Engine** — One stage in the 13-module pipeline that scores and ranks JSE equities for investment. All modules feed into a single composite score and calibrated win probability. See the [root README](../../README.md) for the full pipeline.
+
 **Pipeline position:** Consumes alerts and rolling metrics from
 `10-continuous-monitoring`. Outputs investigation triggers to
 `13-hypothesis-model-registry` (status change candidates) and, where
