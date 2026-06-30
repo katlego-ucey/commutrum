@@ -1,0 +1,585 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.2.0
+  description: |
+    Commutrum Wealth Engine — JSE quantitative scoring API.
+    All dates are YYYY-MM-DD in SAST (UTC+2). All monetary values in ZAR.
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: universe
+    description: Module 00 — Universe screening (hard filters)
+  - name: data
+    description: Module 01 — Point-in-time data pipeline
+  - name: factors
+    description: Module 02 — Baseline factors (Piotroski, Momentum, Revisions)
+  - name: calendar
+    description: JSE trading calendar and market status
+  - name: execution
+    description: Module 08 — Transaction cost modelling and broker config
+  - name: registry
+    description: Module 13 — Hypothesis registry, factor admission, model versions
+  - name: monitoring
+    description: Modules 10–11 — Monitoring metrics and decay alerts
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /v1/universe:
+    get:
+      operationId: getUniverse
+      tags: [universe]
+      summary: Get the investable universe for a date
+      parameters:
+        - name: date
+          in: query
+          schema:
+            type: string
+            pattern: "^\\d{4}-\\d{2}-\\d{2}$"
+          description: Snapshot date (YYYY-MM-DD, defaults to today SAST)
+      responses:
+        "200":
+          description: Universe snapshot
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UniverseResponse"
+
+  /v1/universe/{ticker}/screen-status:
+    get:
+      operationId: getTickerScreenStatus
+      tags: [universe]
+      summary: Screen a single ticker against all hard filters as of a date
+      parameters:
+        - name: ticker
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: date
+          in: query
+          schema:
+            type: string
+            pattern: "^\\d{4}-\\d{2}-\\d{2}$"
+      responses:
+        "200":
+          description: Screen result for one ticker
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScreenResult"
+
+  /v1/trading-calendar:
+    get:
+      operationId: getTradingCalendar
+      tags: [calendar]
+      summary: Get JSE trading calendar for a date range
+      parameters:
+        - name: from
+          in: query
+          schema:
+            type: string
+            pattern: "^\\d{4}-\\d{2}-\\d{2}$"
+        - name: to
+          in: query
+          schema:
+            type: string
+            pattern: "^\\d{4}-\\d{2}-\\d{2}$"
+      responses:
+        "200":
+          description: Calendar entries
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CalendarResponse"
+
+  /v1/trading-calendar/status:
+    get:
+      operationId: getMarketStatus
+      tags: [calendar]
+      summary: JSE market status — is today a trading day, is session open
+      responses:
+        "200":
+          description: Market status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MarketStatus"
+
+  /v1/data/prices/{ticker}:
+    get:
+      operationId: getPrices
+      tags: [data]
+      summary: Historical OHLCV prices for a ticker
+      parameters:
+        - name: ticker
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: from
+          in: query
+          schema:
+            type: string
+        - name: to
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Price records
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PricesResponse"
+
+  /v1/data/fundamentals/{ticker}:
+    get:
+      operationId: getFundamentals
+      tags: [data]
+      summary: Point-in-time fundamental data for a ticker
+      parameters:
+        - name: ticker
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: as_of
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Fundamental records
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ticker:
+                    type: string
+                  count:
+                    type: integer
+                  fundamentals:
+                    type: array
+                    items:
+                      type: object
+                required: [ticker, count, fundamentals]
+
+  /v1/factors/definitions:
+    get:
+      operationId: getFactorDefinitions
+      tags: [factors]
+      summary: List all active baseline factor definitions
+      responses:
+        "200":
+          description: Factor definitions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  factors:
+                    type: array
+                    items:
+                      type: object
+                required: [factors]
+
+  /v1/factors/{ticker}/raw:
+    get:
+      operationId: getFactorRawValues
+      tags: [factors]
+      summary: Raw factor values for a ticker (point-in-time)
+      parameters:
+        - name: ticker
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: date
+          in: query
+          schema:
+            type: string
+        - name: factor_id
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Raw factor values
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ticker:
+                    type: string
+                  factors:
+                    type: array
+                    items:
+                      type: object
+                required: [ticker, factors]
+
+  /v1/factors/{ticker}/compute:
+    get:
+      operationId: computeFactors
+      tags: [factors]
+      summary: Compute all baseline factors for a ticker on demand
+      parameters:
+        - name: ticker
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: date
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Computed factor values
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FactorComputeResult"
+
+  /v1/execution/broker-config:
+    get:
+      operationId: getBrokerConfig
+      tags: [execution]
+      summary: List all active broker configurations including Thrive fee
+      responses:
+        "200":
+          description: Broker configurations
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BrokerConfigResponse"
+
+  /v1/execution/cost-model:
+    get:
+      operationId: getCostModel
+      tags: [execution]
+      summary: Current versioned cost model parameters (STT, CGT, impact k)
+      responses:
+        "200":
+          description: Cost model parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  parameters:
+                    type: array
+                    items:
+                      type: object
+                required: [parameters]
+
+  /v1/execution/estimate-shortfall:
+    post:
+      operationId: estimateShortfall
+      tags: [execution]
+      summary: Estimate implementation shortfall for a hypothetical trade
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ShortfallRequest"
+      responses:
+        "200":
+          description: Cost breakdown
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShortfallResponse"
+
+  /v1/registry/factors:
+    get:
+      operationId: getHypothesisRegistry
+      tags: [registry]
+      summary: List all hypothesis registry entries
+      responses:
+        "200":
+          description: Registry entries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  registry:
+                    type: array
+                    items:
+                      type: object
+                required: [registry]
+
+  /v1/registry/audit-log:
+    get:
+      operationId: getRegistryAuditLog
+      tags: [registry]
+      summary: Registry audit trail (last 200 entries)
+      responses:
+        "200":
+          description: Audit log
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /v1/registry/factor-candidates:
+    get:
+      operationId: getFactorCandidates
+      tags: [registry]
+      summary: List factor admission candidates
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, admitted, rejected]
+      responses:
+        "200":
+          description: Candidates
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /v1/monitoring/metrics:
+    get:
+      operationId: getMonitoringMetrics
+      tags: [monitoring]
+      summary: Rolling monitoring metrics (IC, Sharpe, drawdown)
+      responses:
+        "200":
+          description: Metrics
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /v1/monitoring/alerts:
+    get:
+      operationId: getAlerts
+      tags: [monitoring]
+      summary: Open monitoring alerts
+      responses:
+        "200":
+          description: Alerts
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /v1/monitoring/decay-alerts:
+    get:
+      operationId: getDecayAlerts
+      tags: [monitoring]
+      summary: Open factor decay alerts
+      responses:
+        "200":
+          description: Decay alerts
+          content:
+            application/json:
+              schema:
+                type: object
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required: [status]
+
+    ScreenResult:
+      type: object
+      properties:
+        ticker:
+          type: string
+        snapshotDate:
+          type: string
+        passFail:
+          type: boolean
+        exclusionReason:
+          type: string
+          nullable: true
+        adtv20d:
+          type: number
+        marketCapZar:
+          type: number
+        yearsAuditedHistory:
+          type: number
+        lastAuditOpinion:
+          type: string
+        dataCompletenessScore:
+          type: number
+      required: [ticker, snapshotDate, passFail, adtv20d, marketCapZar, yearsAuditedHistory, lastAuditOpinion, dataCompletenessScore]
+
+    UniverseResponse:
+      type: object
+      properties:
+        date:
+          type: string
+        count:
+          type: integer
+        universe:
+          type: array
+          items:
+            $ref: "#/components/schemas/ScreenResult"
+      required: [date, count, universe]
+
+    CalendarResponse:
+      type: object
+      properties:
+        from:
+          type: string
+        to:
+          type: string
+        count:
+          type: integer
+        calendar:
+          type: array
+          items:
+            type: object
+            properties:
+              calendarDate:
+                type: string
+              isTradingDay:
+                type: boolean
+              holidayName:
+                type: string
+                nullable: true
+      required: [from, to, count, calendar]
+
+    MarketStatus:
+      type: object
+      properties:
+        date:
+          type: string
+        timezone:
+          type: string
+        is_trading_day:
+          type: boolean
+        jse_session_open:
+          type: boolean
+        next_trading_day:
+          type: string
+          nullable: true
+        jse_hours_utc:
+          type: string
+        jse_hours_sast:
+          type: string
+      required: [date, timezone, is_trading_day, jse_session_open, jse_hours_utc, jse_hours_sast]
+
+    PricesResponse:
+      type: object
+      properties:
+        ticker:
+          type: string
+        count:
+          type: integer
+        prices:
+          type: array
+          items:
+            type: object
+      required: [ticker, count, prices]
+
+    FactorComputeResult:
+      type: object
+      properties:
+        ticker:
+          type: string
+        date:
+          type: string
+        piotroski:
+          type: number
+          nullable: true
+        momentum:
+          type: number
+          nullable: true
+        revisions:
+          type: number
+          nullable: true
+      required: [ticker, date]
+
+    BrokerConfigResponse:
+      type: object
+      properties:
+        brokers:
+          type: array
+          items:
+            type: object
+            properties:
+              brokerId:
+                type: string
+              displayName:
+                type: string
+              commissionPct:
+                type: string
+              hasMonthlyFlatFee:
+                type: boolean
+              monthlyFlatFeeZar:
+                type: string
+                nullable: true
+              fractionalShares:
+                type: boolean
+              minTradeZar:
+                type: string
+      required: [brokers]
+
+    ShortfallRequest:
+      type: object
+      properties:
+        ticker:
+          type: string
+        tradeValueZar:
+          type: number
+        brokerId:
+          type: string
+        adtv20dZar:
+          type: number
+      required: [ticker, tradeValueZar]
+
+    ShortfallResponse:
+      type: object
+      properties:
+        ticker:
+          type: string
+        broker_id:
+          type: string
+        trade_value_zar:
+          type: number
+        breakdown:
+          type: object
+          properties:
+            commission_zar:
+              type: number
+            stt_zar:
+              type: number
+            market_impact_zar:
+              type: number
+            total_zar:
+              type: number
+            total_bps:
+              type: number
+        note:
+          type: string
+      required: [ticker, trade_value_zar, breakdown]
