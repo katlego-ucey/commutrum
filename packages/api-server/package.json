@@ -1,5 +1,5 @@
 {
-  "name": "@workspace/api-server",
+  "name": "@commutrum/api-server",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -10,18 +10,20 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@workspace/db": "workspace:*",
+    "@commutrum/db": "workspace:*",
     "express": "^5.0.0",
-    "zod": "^3.23.8",
+    "zod": "^3.24.0",
     "cors": "^2.8.5",
     "pino": "^9.2.0",
-    "pino-pretty": "^11.2.1"
+    "pino-pretty": "^11.2.1",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/express": "^5.0.0",
     "@types/cors": "^2.8.17",
-    "@types/node": "^20.14.10",
-    "tsx": "^4.16.2",
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
     "typescript": "^5.5.3"
   }
 }
