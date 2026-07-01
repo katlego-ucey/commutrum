@@ -1,0 +1,16 @@
+{
+  "name": "commutrum",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter @workspace/api-server run dev",
+    "build": "pnpm -r run build",
+    "test": "pnpm -r run test",
+    "typecheck": "pnpm -r run typecheck",
+    "db:push": "pnpm --filter @workspace/db run push",
+    "db:seed": "pnpm --filter @workspace/db run seed"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0"
+  },
+  "packageManager": "pnpm@10.26.1"
+}
