@@ -1,9 +1,9 @@
-import { Router } from "express";
+import { Router, type Router as RouterType } from "express";
 import { db } from "@commutrum/db";
 import { monitoringMetricsDaily, alertLog, decayAlerts } from "@commutrum/db";
 import { eq, desc } from "drizzle-orm";
 
-const router = Router();
+const router: RouterType = Router();
 
 router.get("/metrics", async (req, res, next) => {
   try {

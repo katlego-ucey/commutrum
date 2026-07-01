@@ -12,15 +12,7 @@ if (isProduction && !JWT_SECRET) {
 
 const secret = JWT_SECRET || "dev-secret-do-not-use-in-production";
 
-export interface AuthRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-    role: string;
-  };
-}
-
-export function authenticate(req: AuthRequest, res: Response, next: NextFunction) {
+export function authenticate(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
   if (!authHeader?.startsWith("Bearer ")) {
     return res.status(401).json({ error: "Unauthorized: No token provided" });
@@ -28,7 +20,7 @@ export function authenticate(req: AuthRequest, res: Response, next: NextFunction
 
   const token = authHeader.split(" ")[1];
   try {
-    const decoded = jwt.verify(token, secret) as AuthRequest["user"];
+    const decoded = jwt.verify(token, secret) as { userId: string; email: string };
     req.user = decoded;
     next();
   } catch (error) {

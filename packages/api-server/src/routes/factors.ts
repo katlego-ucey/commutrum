@@ -1,10 +1,10 @@
-import { Router } from "express";
+import { Router, type Router as RouterType } from "express";
 import { db } from "@commutrum/db";
 import { factorRawValues, factorDefinitions } from "@commutrum/db";
 import { eq, and, lte, desc } from "drizzle-orm";
 import { computeAllFactors } from "../services/factors.service.js";
 
-const router = Router();
+const router: RouterType = Router();
 
 router.get("/definitions", async (_req, res, next) => {
   try {

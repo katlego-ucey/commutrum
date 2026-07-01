@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, type Router as RouterType } from "express";
 import { db } from "@commutrum/db";
 import {
   hypothesisRegistry,
@@ -11,7 +11,7 @@ import {
 import { eq, desc } from "drizzle-orm";
 import { z } from "zod";
 
-const router = Router();
+const router: RouterType = Router();
 
 router.get("/factors", async (_req, res, next) => {
   try {

@@ -1,10 +1,10 @@
-import { Router } from "express";
+import { Router, type Router as RouterType } from "express";
 import { db } from "@commutrum/db";
 import { brokerConfig, costModelParameters } from "@commutrum/db";
 import { eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 
-const router = Router();
+const router: RouterType = Router();
 
 router.get("/broker-config", async (_req, res, next) => {
   try {

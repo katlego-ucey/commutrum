@@ -1,8 +1,8 @@
-import { Router } from "express";
+import { Router, type Router as RouterType } from "express";
 import { z } from "zod";
 import { getUniverse, screenTicker, runDailyScreen } from "../services/universe.service.js";
 
-const router = Router();
+const router: RouterType = Router();
 
 const dateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Expected YYYY-MM-DD");
 

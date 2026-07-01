@@ -1,11 +1,11 @@
-import { Router } from "express";
+import { Router, type Router as RouterType } from "express";
 import { z } from "zod";
 import { db } from "@commutrum/db";
 import { rawMarketData, rawFundamentals, dataQualityLog, tickers } from "@commutrum/db";
 import { eq, and, lte, gte, desc } from "drizzle-orm";
 import { ingestPrices, ingestDividends, ingestFundamentals, runNightlyBatch } from "../services/ingestion.service.js";
 
-const router = Router();
+const router: RouterType = Router();
 const dateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Expected YYYY-MM-DD");
 
 router.get("/prices/:ticker", async (req, res, next) => {

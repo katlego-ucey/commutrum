@@ -1,4 +1,4 @@
-import { Router, Request, Response, NextFunction } from 'express';
+import { Router, type Router as RouterType, Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
@@ -9,7 +9,7 @@ import { config } from '../config.js';
 import { validate } from '../middleware/validate.js';
 import { authenticate, AuthPayload } from '../middleware/authenticate.js';
 
-const router = Router();
+const router: RouterType = Router();
 
 // ─── Schemas ─────────────────────────────────────────────────────────
 
@@ -37,7 +37,7 @@ const refreshSchema = z.object({
 
 function generateTokens(payload: AuthPayload) {
   const accessToken = jwt.sign(payload, config.JWT_SECRET, {
-    expiresIn: config.JWT_EXPIRES_IN,
+    expiresIn: config.JWT_EXPIRES_IN as any,
   });
 
   const refreshToken = crypto.randomBytes(40).toString('hex');

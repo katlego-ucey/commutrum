@@ -1,9 +1,9 @@
-import { Router } from "express";
+import { Router, type Router as RouterType } from "express";
 import { z } from "zod";
 import { getCalendar, isTradingDay, nextTradingDay } from "../services/trading-calendar.service.js";
 import { todaySast, isJseTradingHours } from "../lib/sast.js";
 
-const router = Router();
+const router: RouterType = Router();
 const dateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Expected YYYY-MM-DD");
 
 router.get("/", async (req, res, next) => {
