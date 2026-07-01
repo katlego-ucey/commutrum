@@ -1,6 +1,6 @@
 import { pgTable, text, date, boolean, numeric, timestamp, integer, index, unique, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { tickers } from "./00-universe";
+import { tickers } from "./00-universe.js";
 
 export const portfolioHoldings = pgTable(
   "portfolio_holdings",

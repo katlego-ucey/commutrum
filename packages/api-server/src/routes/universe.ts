@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { z } from "zod/v4";
-import { getUniverse, screenTicker, runDailyScreen } from "../services/universe.service";
+import { z } from "zod";
+import { getUniverse, screenTicker, runDailyScreen } from "../services/universe.service.js";
 
 const router = Router();
 

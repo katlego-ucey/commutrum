@@ -1,16 +1,22 @@
-import { drizzle } from "drizzle-orm/node-postgres";
-import pg from "pg";
-import * as schema from "./schema";
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
+import * as schema from './schema/index.js';
 
-const { Pool } = pg;
+const queryClient = postgres(process.env.DATABASE_URL || 'postgres://localhost:5432/commutrum');
 
-if (!process.env.DATABASE_URL) {
-  throw new Error(
-    "DATABASE_URL must be set. Did you forget to provision a database?",
-  );
+export const db = drizzle(queryClient, { schema });
+export { schema };
+export * from './schema/index.js';
+
+export async function testConnection(): Promise<boolean> {
+  try {
+    await queryClient`SELECT 1`;
+    return true;
+  } catch {
+    return false;
+  }
 }
 
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle(pool, { schema });
-
-export * from "./schema";
+export async function closeConnection(): Promise<void> {
+  await queryClient.end();
+}

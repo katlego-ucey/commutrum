@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { z } from "zod/v4";
-import { db } from "@workspace/db";
-import { rawMarketData, rawFundamentals, dataQualityLog, tickers } from "@workspace/db";
+import { z } from "zod";
+import { db } from "@commutrum/db";
+import { rawMarketData, rawFundamentals, dataQualityLog, tickers } from "@commutrum/db";
 import { eq, and, lte, gte, desc } from "drizzle-orm";
-import { ingestPrices, ingestDividends, ingestFundamentals, runNightlyBatch } from "../services/ingestion.service";
+import { ingestPrices, ingestDividends, ingestFundamentals, runNightlyBatch } from "../services/ingestion.service.js";
 
 const router = Router();
 const dateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Expected YYYY-MM-DD");

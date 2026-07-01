@@ -1,46 +1,64 @@
-/**
- * Database seed — run after initial schema push.
- * Usage: pnpm --filter @workspace/db run seed
- */
-import { drizzle } from "drizzle-orm/node-postgres";
-import pg from "pg";
-import { generateTradingCalendar } from "./seeds/trading-calendar";
-import { BROKER_SEEDS } from "./seeds/broker-config";
-import { COST_MODEL_PARAMETER_SEEDS } from "./seeds/cost-model-parameters";
-import { tradingCalendar, brokerConfig, costModelParameters } from "./schema";
-
-const { Pool } = pg;
-
-if (!process.env["DATABASE_URL"]) {
-  throw new Error("DATABASE_URL environment variable required");
-}
-
-const pool = new Pool({ connectionString: process.env["DATABASE_URL"] });
-const db = drizzle(pool);
+import { db, closeConnection } from './index.js';
+import { factorType } from './schema/index.js';
 
 async function seed() {
-  console.log("Seeding trading_calendar (2025-01-01 to 2027-12-31)...");
-  const calRows = generateTradingCalendar("2025-01-01", "2027-12-31");
-  await db.insert(tradingCalendar).values(calRows).onConflictDoNothing();
-  console.log(`  Inserted ${calRows.length} calendar rows`);
+  console.log('Seeding database...');
 
-  console.log("Seeding broker_config...");
-  await db.insert(brokerConfig).values(BROKER_SEEDS).onConflictDoNothing();
-  console.log(`  Inserted ${BROKER_SEEDS.length} broker rows`);
+  const factors = [
+    {
+      name: 'quality_roe',
+      displayName: 'Return on Equity',
+      description: 'Measures profitability relative to shareholder equity',
+      category: 'quality',
+      weight: '0.1667',
+    },
+    {
+      name: 'quality_debt_to_equity',
+      displayName: 'Debt-to-Equity Ratio',
+      description: 'Measures financial leverage',
+      category: 'quality',
+      weight: '0.1667',
+    },
+    {
+      name: 'momentum_6m',
+      displayName: '6-Month Momentum',
+      description: 'Price return over the last 6 months',
+      category: 'momentum',
+      weight: '0.1667',
+    },
+    {
+      name: 'momentum_12m',
+      displayName: '12-Month Momentum',
+      description: 'Price return over the last 12 months, excluding the last month',
+      category: 'momentum',
+      weight: '0.1667',
+    },
+    {
+      name: 'earnings_revision_up',
+      displayName: 'Earnings Revision Upgrades',
+      description: 'Net percentage of analysts revising earnings upward',
+      category: 'earnings',
+      weight: '0.1667',
+    },
+    {
+      name: 'earnings_surprise',
+      displayName: 'Earnings Surprise',
+      description: 'Magnitude of actual earnings vs consensus estimates',
+      category: 'earnings',
+      weight: '0.1667',
+    },
+  ];
 
-  console.log("Seeding cost_model_parameters...");
-  const paramRows = COST_MODEL_PARAMETER_SEEDS.map((p) => ({
-    ...p,
-    id: crypto.randomUUID(),
-  }));
-  await db.insert(costModelParameters).values(paramRows).onConflictDoNothing();
-  console.log(`  Inserted ${paramRows.length} cost parameter rows`);
+  for (const factor of factors) {
+    await db.insert(factorType).values(factor).onConflictDoNothing({ target: factorType.name });
+    console.log(`  ✓ Factor: ${factor.name}`);
+  }
 
-  await pool.end();
-  console.log("Seed complete.");
+  console.log('Seed complete.');
+  await closeConnection();
 }
 
 seed().catch((err) => {
-  console.error("Seed failed:", err);
+  console.error('Seed failed:', err);
   process.exit(1);
 });

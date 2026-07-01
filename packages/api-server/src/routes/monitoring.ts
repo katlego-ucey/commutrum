@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { db } from "@workspace/db";
-import { monitoringMetricsDaily, alertLog, decayAlerts } from "@workspace/db";
+import { db } from "@commutrum/db";
+import { monitoringMetricsDaily, alertLog, decayAlerts } from "@commutrum/db";
 import { eq, desc } from "drizzle-orm";
 
 const router = Router();

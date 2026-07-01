@@ -11,7 +11,7 @@
  * ALL values are divided by 100 on ingestion to store in ZAR.
  */
 
-import { logger } from "../lib/logger";
+import { logger } from "../lib/logger.js";
 
 const BASE_URL = "https://eodhd.com/api";
 

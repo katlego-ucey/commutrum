@@ -1,4 +1,4 @@
-import type { InsertTradingCalendar } from "../schema/01-data-pipeline";
+import type { InsertTradingCalendar } from "../schema/01-data-pipeline.js";
 
 type Holiday = { date: string; name: string };
 

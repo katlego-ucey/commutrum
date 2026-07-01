@@ -2,15 +2,13 @@
   "name": "commutrum",
   "private": true,
   "scripts": {
-    "dev": "pnpm --filter @workspace/api-server run dev",
+    "dev": "pnpm -r --parallel run dev",
     "build": "pnpm -r run build",
-    "test": "pnpm -r run test",
-    "typecheck": "pnpm -r run typecheck",
-    "db:push": "pnpm --filter @workspace/db run push",
-    "db:seed": "pnpm --filter @workspace/db run seed"
+    "lint": "pnpm -r run lint",
+    "typecheck": "pnpm -r run typecheck"
   },
-  "devDependencies": {
-    "typescript": "^5.9.0"
+  "engines": {
+    "node": ">=18.0.0"
   },
-  "packageManager": "pnpm@10.26.1"
+  "packageManager": "pnpm@11.9.0"
 }

@@ -1,6 +1,6 @@
 import { pgTable, text, date, boolean, numeric, timestamp, integer, index } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { z } from "zod/v4";
+import { z } from "zod";
 
 export const tickers = pgTable("tickers", {
   ticker: text("ticker").primaryKey(),

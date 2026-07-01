@@ -6,17 +6,17 @@
  * All filters use only data available as-of the snapshot date (point-in-time).
  */
 
-import { db } from "@workspace/db";
+import { db } from "@commutrum/db";
 import {
   tickers,
   universeSnapshot,
   screeningRules,
   rawMarketData,
   rawFundamentals,
-} from "@workspace/db";
+} from "@commutrum/db";
 import { eq, and, lte, gte, sql, desc } from "drizzle-orm";
-import { todaySast } from "../lib/sast";
-import { isTradingDay } from "./trading-calendar.service";
+import { todaySast } from "../lib/sast.js";
+import { isTradingDay } from "./trading-calendar.service.js";
 
 const ADTV_THRESHOLD_ZAR = 500_000;
 const MARKET_CAP_MIN_ZAR = 500_000_000;

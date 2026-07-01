@@ -1,4 +1,4 @@
-import type { InsertBrokerConfig } from "../schema/06-08-portfolio-execution";
+import type { InsertBrokerConfig } from "../schema/06-08-portfolio-execution.js";
 
 export const BROKER_SEEDS: InsertBrokerConfig[] = [
   {

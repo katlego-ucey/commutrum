@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { db } from "@workspace/db";
+import { db } from "@commutrum/db";
 import {
   hypothesisRegistry,
   modelVersions,
@@ -7,9 +7,9 @@ import {
   factorCandidates,
   admissionGateResults,
   admissionDecisions,
-} from "@workspace/db";
+} from "@commutrum/db";
 import { eq, desc } from "drizzle-orm";
-import { z } from "zod/v4";
+import { z } from "zod";
 
 const router = Router();
 

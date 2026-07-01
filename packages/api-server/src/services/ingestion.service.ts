@@ -6,17 +6,17 @@
  * publication_date is set to today (the date the data became known to us).
  */
 
-import { db } from "@workspace/db";
-import { rawMarketData, rawDividends, rawFundamentals, tickers } from "@workspace/db";
+import { db } from "@commutrum/db";
+import { rawMarketData, rawDividends, rawFundamentals, tickers } from "@commutrum/db";
 import { eq } from "drizzle-orm";
 import {
   fetchEodPrices,
   fetchDividends,
   fetchFundamentals,
   centToRand,
-} from "./eodhd.service";
-import { todaySast } from "../lib/sast";
-import { logger } from "../lib/logger";
+} from "./eodhd.service.js";
+import { todaySast } from "../lib/sast.js";
+import { logger } from "../lib/logger.js";
 
 export async function ingestPrices(
   ticker: string,

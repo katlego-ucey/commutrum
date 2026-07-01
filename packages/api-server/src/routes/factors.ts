@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { db } from "@workspace/db";
-import { factorRawValues, factorDefinitions } from "@workspace/db";
+import { db } from "@commutrum/db";
+import { factorRawValues, factorDefinitions } from "@commutrum/db";
 import { eq, and, lte, desc } from "drizzle-orm";
-import { computeAllFactors } from "../services/factors.service";
+import { computeAllFactors } from "../services/factors.service.js";
 
 const router = Router();
 

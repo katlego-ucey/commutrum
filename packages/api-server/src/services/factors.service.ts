@@ -6,7 +6,7 @@
  * Momentum uses adjusted_close — NOT raw close (dividends distort momentum).
  */
 
-import { db } from "@workspace/db";
+import { db } from "@commutrum/db";
 import {
   rawFundamentals,
   rawMarketData,
@@ -14,10 +14,10 @@ import {
   rawEstimateRevisions,
   factorRawValues,
   factorDefinitions,
-} from "@workspace/db";
+} from "@commutrum/db";
 import { eq, and, lte, gte, desc } from "drizzle-orm";
-import { todaySast } from "../lib/sast";
-import { logger } from "../lib/logger";
+import { todaySast } from "../lib/sast.js";
+import { logger } from "../lib/logger.js";
 
 /** Get the two most recent annual fundamental periods for a ticker as-of date. */
 async function getAnnualPeriods(ticker: string, asOfDate: string) {

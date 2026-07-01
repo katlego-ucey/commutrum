@@ -1,8 +1,16 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import { logger } from "./logger";
+import { logger } from "./logger.js";
 
-const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-do-not-use-in-production";
+const JWT_SECRET = process.env.JWT_SECRET;
+const isProduction = process.env.NODE_ENV === "production";
+
+if (isProduction && !JWT_SECRET) {
+  logger.fatal("JWT_SECRET environment variable is required in production");
+  process.exit(1);
+}
+
+const secret = JWT_SECRET || "dev-secret-do-not-use-in-production";
 
 export interface AuthRequest extends Request {
   user?: {
@@ -20,7 +28,7 @@ export function authenticate(req: AuthRequest, res: Response, next: NextFunction
 
   const token = authHeader.split(" ")[1];
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as AuthRequest["user"];
+    const decoded = jwt.verify(token, secret) as AuthRequest["user"];
     req.user = decoded;
     next();
   } catch (error) {

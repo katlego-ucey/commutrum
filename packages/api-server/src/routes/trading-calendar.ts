@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { z } from "zod/v4";
-import { getCalendar, isTradingDay, nextTradingDay } from "../services/trading-calendar.service";
-import { todaySast, isJseTradingHours } from "../lib/sast";
+import { z } from "zod";
+import { getCalendar, isTradingDay, nextTradingDay } from "../services/trading-calendar.service.js";
+import { todaySast, isJseTradingHours } from "../lib/sast.js";
 
 const router = Router();
 const dateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Expected YYYY-MM-DD");

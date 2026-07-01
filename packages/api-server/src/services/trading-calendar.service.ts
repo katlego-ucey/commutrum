@@ -1,7 +1,7 @@
-import { db } from "@workspace/db";
-import { tradingCalendar } from "@workspace/db";
+import { db } from "@commutrum/db";
+import { tradingCalendar } from "@commutrum/db";
 import { eq, and, lte, gte } from "drizzle-orm";
-import { todaySast } from "../lib/sast";
+import { todaySast } from "../lib/sast.js";
 
 export async function isTradingDay(date?: string): Promise<boolean> {
   const d = date ?? todaySast();

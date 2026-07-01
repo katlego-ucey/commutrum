@@ -1,13 +1,13 @@
 import { Router, type IRouter } from "express";
-import healthRouter from "./health";
-import universeRouter from "./universe";
-import dataRouter from "./data";
-import factorsRouter from "./factors";
-import tradingCalendarRouter from "./trading-calendar";
-import executionRouter from "./execution";
-import registryRouter from "./registry";
-import monitoringRouter from "./monitoring";
-import { authenticate } from "../lib/auth";
+import healthRouter from "./health.js";
+import universeRouter from "./universe.js";
+import dataRouter from "./data.js";
+import factorsRouter from "./factors.js";
+import tradingCalendarRouter from "./trading-calendar.js";
+import executionRouter from "./execution.js";
+import registryRouter from "./registry.js";
+import monitoringRouter from "./monitoring.js";
+import { authenticate } from "../lib/auth.js";
 
 const router: IRouter = Router();
 

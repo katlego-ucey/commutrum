@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { db } from "@workspace/db";
-import { brokerConfig, costModelParameters } from "@workspace/db";
+import { db } from "@commutrum/db";
+import { brokerConfig, costModelParameters } from "@commutrum/db";
 import { eq, isNull } from "drizzle-orm";
-import { z } from "zod/v4";
+import { z } from "zod";
 
 const router = Router();
 
