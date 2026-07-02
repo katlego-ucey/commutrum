@@ -1,10 +1,10 @@
 // ─── Re-export all module-specific schema files ────────────────────────
 // These contain the pipeline tables the api-server services depend on.
-export * from './00-universe';
-export * from './01-data-pipeline';
-export * from './02-05-research';
-export * from './06-08-portfolio-execution';
-export * from './07-governance';
+export * from './00-universe.js';
+export * from './01-data-pipeline.js';
+export * from './02-05-research.js';
+export * from './06-08-portfolio-execution.js';
+export * from './07-governance.js';
 
 import {
   pgTable,

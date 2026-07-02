@@ -2,11 +2,11 @@
 // for compatibility with drizzle-kit's CJS loader (jiti).
 // The main index.ts uses .js extensions for the TypeScript bundler build.
 
-export * from './00-universe';
-export * from './01-data-pipeline';
-export * from './02-05-research';
-export * from './06-08-portfolio-execution';
-export * from './07-governance';
+export * from './00-universe.js';
+export * from './01-data-pipeline.js';
+export * from './02-05-research.js';
+export * from './06-08-portfolio-execution.js';
+export * from './07-governance.js';
 
 // Re-export inline tables from main index
 export {
@@ -20,4 +20,4 @@ export {
   portfolios,
   portfolioPositions,
   apiUsage,
-} from './index';
+} from './index.js';
