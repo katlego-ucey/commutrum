@@ -208,10 +208,46 @@ export async function computeRevisions(
   return (breadth + magnitude) / 2;
 }
 
+/**
+ * Liquidity screen: 20-day average daily trading value (ZAR).
+ * Returns ADTV or null if insufficient data.
+ * This is a continuous liquidity measure (not binary), used for ranking/screening.
+ */
+export async function computeLiquidity(
+  ticker: string,
+  asOfDate: string,
+): Promise<number | null> {
+  const twentyDaysAgo = addDays(asOfDate, -20);
+
+  const rows = await db
+    .select({
+      tradedValue: rawMarketData.tradedValueZar,
+    })
+    .from(rawMarketData)
+    .where(
+      and(
+        eq(rawMarketData.ticker, ticker),
+        lte(rawMarketData.tradeDate, asOfDate),
+        gte(rawMarketData.tradeDate, twentyDaysAgo),
+      ),
+    )
+    .orderBy(desc(rawMarketData.tradeDate))
+    .limit(20);
+
+  if (rows.length === 0) return null;
+
+  const total = rows.reduce(
+    (sum, r) => sum + (r.tradedValue ? Number(r.tradedValue) : 0),
+    0,
+  );
+  return total / rows.length;
+}
+
 export interface FactorResult {
   piotroski: number | null;
   momentum: number | null;
   revisions: number | null;
+  adtv20d: number | null;
 }
 
 export async function computeAllFactors(
@@ -219,12 +255,58 @@ export async function computeAllFactors(
   asOfDate?: string,
 ): Promise<FactorResult> {
   const date = asOfDate ?? todaySast();
-  const [piotroski, momentum, revisions] = await Promise.all([
+  const [piotroski, momentum, revisions, adtv20d] = await Promise.all([
     computePiotroski(ticker, date),
     computeMomentum(ticker, date),
     computeRevisions(ticker, date),
+    computeLiquidity(ticker, date),
   ]);
-  return { piotroski, momentum, revisions };
+  return { piotroski, momentum, revisions, adtv20d };
+}
+
+/**
+ * Persist computed factor raw values to the factor_raw_values table.
+ * Looks up factor IDs from factorDefinitions by name and inserts each result.
+ * Uses onConflictDoNothing for idempotency.
+ */
+export async function persistFactorValues(
+  ticker: string,
+  asOfDate: string,
+  results: FactorResult,
+): Promise<number> {
+  const factorDefs = await db
+    .select({ factorId: factorDefinitions.factorId, name: factorDefinitions.name })
+    .from(factorDefinitions)
+    .where(lte(factorDefinitions.effectiveFrom, asOfDate));
+
+  const factorMap = new Map(factorDefs.map((d) => [d.name, d.factorId]));
+
+  const scoreFactor = (name: string, value: number | null) => {
+    if (value === null) return null;
+    const factorId = factorMap.get(name);
+    if (!factorId) return null;
+    return {
+      ticker,
+      computeDate: asOfDate,
+      factorId,
+      rawValue: String(value),
+      computedFromPublicationDate: asOfDate,
+      formulaVersion: "v1",
+    };
+  };
+
+  const rows = [
+    scoreFactor("piotroski_fscore", results.piotroski),
+    scoreFactor("price_momentum_12_1", results.momentum),
+    scoreFactor("earnings_revision_signal", results.revisions),
+    scoreFactor("liquidity_adtv_20d", results.adtv20d),
+  ].filter((r): r is NonNullable<typeof r> => r !== null);
+
+  if (rows.length === 0) return 0;
+
+  await db.insert(factorRawValues).values(rows).onConflictDoNothing();
+  logger.info({ ticker, count: rows.length }, "Persisted factor raw values");
+  return rows.length;
 }
 
 function addMonths(dateStr: string, months: number): string {

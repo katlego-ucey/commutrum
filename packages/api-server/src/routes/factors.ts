@@ -2,7 +2,7 @@ import { Router, type Router as RouterType } from "express";
 import { db } from "@commutrum/db";
 import { factorRawValues, factorDefinitions } from "@commutrum/db";
 import { eq, and, lte, desc } from "drizzle-orm";
-import { computeAllFactors } from "../services/factors.service.js";
+import { computeAllFactors, persistFactorValues } from "../services/factors.service.js";
 
 const router: RouterType = Router();
 
@@ -49,6 +49,19 @@ router.get("/:ticker/compute", async (req, res, next) => {
     const date = req.query["date"] as string | undefined;
     const result = await computeAllFactors(ticker, date);
     res.json({ ticker, date: date ?? "today", ...result });
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post("/:ticker/compute-and-persist", async (req, res, next) => {
+  try {
+    const ticker = (req.params as { ticker: string }).ticker.toUpperCase();
+    const date = req.query["date"] as string | undefined;
+    const asOfDate = date ?? new Date().toISOString().slice(0, 10);
+    const result = await computeAllFactors(ticker, asOfDate);
+    const persisted = await persistFactorValues(ticker, asOfDate, result);
+    res.json({ ticker, date: asOfDate, computed: result, persisted });
   } catch (err) {
     next(err);
   }

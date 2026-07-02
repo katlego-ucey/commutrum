@@ -1,5 +1,6 @@
 import { db, closeConnection } from './index.js';
 import { factorType } from './schema/index.js';
+import { seedFactorDefinitions } from './seeds/factor-definitions.js';
 
 async function seed() {
   console.log('Seeding database...');
@@ -53,6 +54,9 @@ async function seed() {
     await db.insert(factorType).values(factor).onConflictDoNothing({ target: factorType.name });
     console.log(`  ✓ Factor: ${factor.name}`);
   }
+
+  // Seed v1 baseline factor definitions for Module 02-05 research pipeline
+  await seedFactorDefinitions();
 
   console.log('Seed complete.');
   await closeConnection();

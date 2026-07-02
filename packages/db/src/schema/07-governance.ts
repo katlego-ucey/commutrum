@@ -1,6 +1,6 @@
 import { pgTable, text, date, boolean, numeric, timestamp, integer, index, unique, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { factorDefinitions } from "./02-05-research.js";
+import { factorDefinitions } from "./02-05-research";
 
 export const backtestRuns = pgTable("backtest_runs", {
   runId: text("run_id").primaryKey().$defaultFn(() => crypto.randomUUID()),
